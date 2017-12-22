@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.0.M7</version>
+  </parent>
+
   <groupId>io.github.rcarlosdasilva</groupId>
   <artifactId>wenger</artifactId>
   <packaging>pom</packaging>
@@ -19,5 +25,264 @@
     <module>wenger-ms-sample-function</module>
     <module>wenger-cli</module>
   </modules>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <maven.compiler.version>3.1</maven.compiler.version>
+    <maven.clean.version>2.6.1</maven.clean.version>
+    <maven.install.version>2.5.2</maven.install.version>
+    <maven.release.version>2.5.2</maven.release.version>
+    <maven.resources.version>3.0.0</maven.resources.version>
+    <maven.source.version>2.4</maven.source.version>
+    <maven.javadoc.version>2.10.4</maven.javadoc.version>
+    <maven.surefire.version>2.18.1</maven.surefire.version>
+
+    <kits.version>0.2</kits.version>
+    <guava.version>23.0</guava.version>
+    <fastjson.version>1.2.23</fastjson.version>
+    <autoloadcache.version>6.4.2</autoloadcache.version>
+    <kaptcha.version>0.0.9</kaptcha.version>
+    <ip2region.version>1.4</ip2region.version>
+    <modelmapper.version>1.1.0</modelmapper.version>
+    <jsoup.version>1.10.3</jsoup.version>
+    <protobuf.version>2.6.1</protobuf.version>
+    <druid.version>1.1.3</druid.version>
+    <baomidou.starter.version>1.0.5</baomidou.starter.version>
+    <baomidou.mybatisplus.version>2.1.7-SNAPSHOT</baomidou.mybatisplus.version>
+
+    <aliyun.core.version>3.0.7</aliyun.core.version>
+    <aliyun.oss.version>2.8.1</aliyun.oss.version>
+    <aliyun.ons.version>1.7.0.Final</aliyun.ons.version>
+    <aliyun.green.version>3.0.0</aliyun.green.version>
+    <aliyun.log.version>0.6.10</aliyun.log.version>
+    <aliyun.loghub.producer.version>0.1.8</aliyun.loghub.producer.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>aliyun</id>
+      <name>Aliyun</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+    </repository>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/libs-milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </snapshots>
+      <id>sonatype</id>
+      <name>sonatype snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.github.rcarlosdasilva</groupId>
+        <artifactId>kits</artifactId>
+        <version>${kits.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>fastjson</artifactId>
+        <version>${fastjson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun</groupId>
+        <artifactId>aliyun-java-sdk-core</artifactId>
+        <version>${aliyun.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun.oss</groupId>
+        <artifactId>aliyun-sdk-oss</artifactId>
+        <version>${aliyun.oss.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun.openservices</groupId>
+        <artifactId>ons-client</artifactId>
+        <version>${aliyun.ons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun</groupId>
+        <artifactId>aliyun-java-sdk-green</artifactId>
+        <version>${aliyun.green.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun.openservices</groupId>
+        <artifactId>aliyun-log</artifactId>
+        <version>${aliyun.log.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun.openservices</groupId>
+        <artifactId>log-loghub-producer</artifactId>
+        <version>${aliyun.loghub.producer.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.qiujiayu</groupId>
+        <artifactId>autoload-cache-spring-boot-starter</artifactId>
+        <version>${autoloadcache.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.axet</groupId>
+        <artifactId>kaptcha</artifactId>
+        <version>${kaptcha.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.jmnarloch</groupId>
+        <artifactId>modelmapper-spring-boot-starter</artifactId>
+        <version>${modelmapper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>${jsoup.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lionsoul</groupId>
+        <artifactId>ip2region</artifactId>
+        <version>${ip2region.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.protobuf</groupId>
+        <artifactId>protobuf-java</artifactId>
+        <version>${protobuf.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid</artifactId>
+        <version>${druid.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatisplus-spring-boot-starter</artifactId>
+        <version>${baomidou.starter.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus</artifactId>
+        <version>${baomidou.mybatisplus.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>${jjwt.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven.clean.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${maven.install.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${maven.release.version}</version>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven.resources.version}</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <delimiters>
+            <delimiter>#</delimiter>
+          </delimiters>
+          <useDefaultDelimiters>true</useDefaultDelimiters>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven.source.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.version}</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.version}</version>
+        <configuration>
+          <skipTests>true</skipTests>
+          <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

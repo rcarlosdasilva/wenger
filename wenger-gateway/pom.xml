@@ -10,5 +10,70 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>wenger.gateway</artifactId>
+  <packaging>jar</packaging>
+  <description>Gateway - API网关</description>
+
+  <properties>
+    <jjwt.version>0.7.0</jjwt.version>
+  </properties>
+
+  <dependencies>
+    <!-- Project Modules -->
+    <dependency>
+      <groupId>io.github.rcarlosdasilva</groupId>
+      <artifactId>wenger.feature</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Spring Libraries -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+
+    <!-- Third Parts Libraries -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.qiujiayu</groupId>
+      <artifactId>autoload-cache-spring-boot-starter</artifactId>
+    </dependency>
+
+    <!-- Test Or Non-inherited Libraries -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>

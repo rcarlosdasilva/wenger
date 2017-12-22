@@ -10,6 +10,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>wenger.ms.sample.function</artifactId>
+  <packaging>jar</packaging>
+  <description>Sample@Function - 例子-业务功能模块</description>
 
+  <dependencies>
+    <!-- Project Modules -->
+    <dependency>
+      <groupId>io.github.rcarlosdasilva</groupId>
+      <artifactId>wenger.ms</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 
 </project>
