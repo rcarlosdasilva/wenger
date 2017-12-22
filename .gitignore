@@ -1,0 +1,37 @@
+*~
+#*
+*#
+.#*
+
+# Java class files
+*.class
+
+# generated files
+build
+bin
+
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+# maven target
+target
+#!.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+.mvn
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

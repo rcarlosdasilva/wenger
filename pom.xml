@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.github.rcarlosdasilva</groupId>
+  <artifactId>wenger</artifactId>
+  <packaging>pom</packaging>
+  <version>0.1-SNAPSHOT</version>
+  <description>Wenger - 分布式Web框架模板</description>
+
+  <modules>
+    <module>wenger-gateway</module>
+    <module>wenger-feature</module>
+    <module>wenger-common</module>
+    <module>wenger-ms</module>
+    <module>wenger-ms-sample-admin</module>
+    <module>wenger-ms-sample-function</module>
+    <module>wenger-cli</module>
+  </modules>
+
+</project>
