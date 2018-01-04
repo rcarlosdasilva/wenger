@@ -13,6 +13,6 @@ public class AppProperties {
   /**
    * 更多配置
    */
-  private MiscProperties misc;
+  private MiscProperties misc = new MiscProperties();
 
 }

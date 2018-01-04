@@ -6,7 +6,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import io.github.rcarlosdasilva.kits.string.TextHelper;
 import io.github.rcarlosdasilva.wenger.feature.config.AppProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
  *
  * @author Dean Zhao (rcarlosdasilva@qq.com)
  */
-@Slf4j
 @ConditionalOnProperty(name = "app.misc.region.enable", havingValue = "true")
 @Component
 @EnableConfigurationProperties({AppProperties.class})
