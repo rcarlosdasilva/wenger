@@ -43,7 +43,7 @@ public class MailHandler implements SmartInitializingSingleton {
    * @param mail {@link Mail}
    * @throws MailSendException 发送邮件时任何异常
    */
-  public void send(@NonNull Mail mail) throws MailSendException {
+  public void send(@NonNull Mail mail) {
     if (!usable || !validate(mail)) {
       return;
     }

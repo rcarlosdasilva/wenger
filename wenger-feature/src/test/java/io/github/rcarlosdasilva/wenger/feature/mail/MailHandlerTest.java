@@ -19,7 +19,8 @@ import java.io.File;
  * @since <pre>12/25/2017</pre>
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MailHandler.class}, properties = "app.misc.mail.enable=true", webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = {MailHandler.class}, properties = "app.misc.mail.enable=true", webEnvironment =
+    SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration(classes = TestBoostrap.class)
 public class MailHandlerTest {
 
@@ -27,18 +28,19 @@ public class MailHandlerTest {
   private MailHandler mailHandler;
 
   @Before
-  public void before() throws Exception {
+  public void before() {
   }
 
   @After
-  public void after() throws Exception {
+  public void after() {
   }
 
   /**
    * Method: send(@NonNull Mail mail)
    */
+  @Ignore
   @Test
-  public void testSend1() throws Exception {
+  public void testSend1() {
     Mail mail = new Mail("rcarlosdasilva@qq.com", Lists.newArrayList("zhaochangsheng@yingxinhuitong.com"), "Wenger " +
         "Mail Test",
         "通过MailHandler发送");
@@ -48,7 +50,7 @@ public class MailHandlerTest {
 
   @Ignore
   @Test
-  public void testSend2() throws Exception {
+  public void testSend2() {
     Mail mail = new Mail("rcarlosdasilva@qq.com", Lists.newArrayList("zhaochangsheng@yingxinhuitong.com"), "Wenger " +
         "Mail Test",
         "通过MailHandler发送带附件的邮件");
