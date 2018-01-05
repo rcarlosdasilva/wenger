@@ -3,4 +3,11 @@ spring:
     host: smtp.qq.com
     port: 25
     username: rcarlosdasilva@qq.com
-    password: yourpassword
+    password: haduhcdjtbfbcadh
+logging:
+  level:
+    io.github.rcarlosdasilva.wenger.feature: debug
+app:
+  misc:
+    captcha:
+      qa: io.github.rcarlosdasilva.wenger.feature.captcha.qa.ChineseTextDuplicateCaptchaQa

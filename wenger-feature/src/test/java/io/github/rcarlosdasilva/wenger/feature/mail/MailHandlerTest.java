@@ -1,12 +1,10 @@
 package io.github.rcarlosdasilva.wenger.feature.mail;
 
-import io.github.rcarlosdasilva.wenger.feature.TestBoostrap;
 import org.assertj.core.util.Lists;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -21,7 +19,6 @@ import java.io.File;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MailHandler.class}, properties = "app.misc.mail.enable=true", webEnvironment =
     SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration(classes = TestBoostrap.class)
 public class MailHandlerTest {
 
   @Autowired(required = false)
@@ -38,7 +35,6 @@ public class MailHandlerTest {
   /**
    * Method: send(@NonNull Mail mail)
    */
-  @Ignore
   @Test
   public void testSend1() {
     Mail mail = new Mail("rcarlosdasilva@qq.com", Lists.newArrayList("zhaochangsheng@yingxinhuitong.com"), "Wenger " +

@@ -2,7 +2,6 @@ package io.github.rcarlosdasilva.wenger.feature.region;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import io.github.rcarlosdasilva.wenger.feature.TestBoostrap;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collection;
@@ -26,7 +24,6 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {RegionHandler.class}, properties = "app.misc.region.enable=true", webEnvironment =
     SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration(classes = TestBoostrap.class)
 public class RegionHandlerTest {
 
   @Autowired

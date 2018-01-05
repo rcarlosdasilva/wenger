@@ -1,5 +1,6 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app;
 
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.CaptchaProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.MailProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.RegionProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.SequenceProperties;
@@ -20,5 +21,9 @@ public class MiscProperties {
    * 分布式ID配置
    */
   private SequenceProperties sequence = new SequenceProperties();
+  /**
+   * 验证码配置
+   */
+  private CaptchaProperties captcha = new CaptchaProperties();
 
 }
