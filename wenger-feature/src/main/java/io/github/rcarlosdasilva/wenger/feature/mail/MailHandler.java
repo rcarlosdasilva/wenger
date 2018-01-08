@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 /**
  * 依赖Spring Boot Mail的邮件发送工具类
  *
- * @author Dean Zhao (rcarlosdasilva@qq.com)
+ * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
  */
 @Slf4j
 @ConditionalOnProperty(name = "app.misc.mail.enable", havingValue = "true")

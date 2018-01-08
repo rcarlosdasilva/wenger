@@ -39,7 +39,7 @@
     <maven.javadoc.version>2.10.4</maven.javadoc.version>
     <maven.surefire.version>2.18.1</maven.surefire.version>
 
-    <kits.version>0.2</kits.version>
+    <kits.version>0.3-SNAPSHOT</kits.version>
     <guava.version>23.0</guava.version>
     <fastjson.version>1.2.23</fastjson.version>
     <autoloadcache.version>6.4.2</autoloadcache.version>

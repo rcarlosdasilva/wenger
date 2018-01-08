@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * 地区数据解析器
  *
- * @author Dean Zhao (rcarlosdasilva@qq.com)
+ * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
  */
 @ConditionalOnProperty(name = "app.misc.region.enable", havingValue = "true")
 @Component
@@ -61,7 +61,7 @@ public class RegionHandler implements SmartInitializingSingleton {
 
     // 无法读取
     if (!resource.exists()) {
-      throw new RegionDataException("[地域] - 无法找到地域数据文件，请确保app.misc.china.location配置的文件地址存在");
+      throw new RegionDataException("[地域] - 无法找到地域数据文件，请确保app.misc.region.location配置的文件地址存在");
     }
 
     Properties properties;

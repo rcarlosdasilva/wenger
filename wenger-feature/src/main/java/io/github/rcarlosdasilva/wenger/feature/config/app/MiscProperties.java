@@ -1,9 +1,6 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app;
 
-import io.github.rcarlosdasilva.wenger.feature.config.app.misc.CaptchaProperties;
-import io.github.rcarlosdasilva.wenger.feature.config.app.misc.MailProperties;
-import io.github.rcarlosdasilva.wenger.feature.config.app.misc.RegionProperties;
-import io.github.rcarlosdasilva.wenger.feature.config.app.misc.SequenceProperties;
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.*;
 import lombok.Data;
 
 @Data
@@ -25,5 +22,9 @@ public class MiscProperties {
    * 验证码配置
    */
   private CaptchaProperties captcha = new CaptchaProperties();
+  /**
+   * IP解析配置
+   */
+  private IpProperties ip = new IpProperties();
 
 }

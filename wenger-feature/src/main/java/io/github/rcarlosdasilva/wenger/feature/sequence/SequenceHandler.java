@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 /**
  * 获取Snowflake算法唯一ID
  *
+ * @date Create at
  * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
  */
 @ConditionalOnProperty(name = "app.misc.sequence.enable", havingValue = "true")

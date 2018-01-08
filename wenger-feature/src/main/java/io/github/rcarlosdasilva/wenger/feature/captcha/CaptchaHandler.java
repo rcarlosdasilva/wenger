@@ -55,7 +55,7 @@ public class CaptchaHandler implements SmartInitializingSingleton {
     try {
       Class.forName(qaClass.getName());
     } catch (ClassNotFoundException ex) {
-      throw new CaptchaException("找不到指定的QA实现类", ex);
+      throw new CaptchaException("[验证码] - 找不到指定的QA实现类", ex);
     }
 
     kaptcha = new DefaultKaptcha();
@@ -134,7 +134,7 @@ public class CaptchaHandler implements SmartInitializingSingleton {
     try {
       return qaClass.newInstance();
     } catch (InstantiationException | IllegalAccessException ex) {
-      throw new CaptchaException("无法实例化QA实现类，请使用mark方法决定如何验证码内容，而不是构造函数", ex);
+      throw new CaptchaException("[验证码] - 无法实例化QA实现类，请使用mark方法决定如何验证码内容，而不是构造函数", ex);
     }
   }
 
