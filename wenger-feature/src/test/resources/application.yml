@@ -3,7 +3,7 @@ spring:
     host: smtp.qq.com
     port: 25
     username: rcarlosdasilva@qq.com
-    password: haduhcdjtbfbcadh
+    password: yourpassword
 logging:
   level:
     io.github.rcarlosdasilva.wenger.feature: debug

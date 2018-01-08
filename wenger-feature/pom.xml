@@ -87,7 +87,7 @@
       <artifactId>fastjson</artifactId>
     </dependency>
 
-    <!-- Aliyun Libraries -->
+    <!-- AliyunProperties Libraries -->
     <dependency>
       <groupId>com.aliyun</groupId>
       <artifactId>aliyun-java-sdk-core</artifactId>

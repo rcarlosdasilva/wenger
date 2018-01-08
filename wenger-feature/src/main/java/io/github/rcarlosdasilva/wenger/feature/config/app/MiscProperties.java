@@ -3,6 +3,9 @@ package io.github.rcarlosdasilva.wenger.feature.config.app;
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.*;
 import lombok.Data;
 
+/**
+ * 系统杂项功能配置
+ */
 @Data
 public class MiscProperties {
 
