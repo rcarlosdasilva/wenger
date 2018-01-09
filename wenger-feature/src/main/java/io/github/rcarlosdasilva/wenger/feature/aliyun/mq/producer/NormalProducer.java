@@ -12,7 +12,7 @@ import java.util.Properties;
 @Slf4j
 public class NormalProducer extends AbstractProducer {
 
-  private Producer producer;
+  private final Producer producer;
 
   public NormalProducer(Properties config) {
     this.producer = ONSFactory.createProducer(config);

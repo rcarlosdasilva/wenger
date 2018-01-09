@@ -1,4 +1,6 @@
 spring:
+  application:
+    index:
   mail:
     host: smtp.qq.com
     port: 25

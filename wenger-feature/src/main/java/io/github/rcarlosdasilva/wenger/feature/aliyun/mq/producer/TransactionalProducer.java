@@ -19,7 +19,7 @@ import java.util.Properties;
 @Slf4j
 public class TransactionalProducer extends AbstractProducer {
 
-  private TransactionProducer producer;
+  private final TransactionProducer producer;
 
   public TransactionalProducer(Properties config, LocalTransactionChecker checker) {
     if (checker == null) {

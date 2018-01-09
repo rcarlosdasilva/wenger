@@ -1,6 +1,6 @@
 package io.github.rcarlosdasilva.wenger.feature.region;
 
-final class RegionConst {
+final class RegionConstant {
 
   public static final String DEFAULT_PROVINCE_PATTERN = "^[1-9]\\d0000$";
   public static final String DEFAULT_CITY_PATTERN = "^[1-9]\\d{3}00$";
@@ -8,7 +8,7 @@ final class RegionConst {
   public static final String PROVINCE_SUFFIX = "0000";
   public static final String CITY_SUFFIX = "00";
 
-  private RegionConst() {
+  private RegionConstant() {
     throw new IllegalStateException();
   }
 

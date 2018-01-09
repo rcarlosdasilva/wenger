@@ -2,6 +2,7 @@ package io.github.rcarlosdasilva.wenger.feature.region;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Optional;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * RegionHandler Tester.

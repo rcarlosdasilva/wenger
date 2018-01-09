@@ -18,7 +18,7 @@ public class SpringRedisCaptchaCache implements CaptchaCache {
   @SuppressWarnings("rawtypes")
   private final RedisTemplate redisTemplate;
   private final String redisKeyPrefix;
-  private int livetime;
+  private final int livetime;
 
   @SuppressWarnings("rawtypes")
   public SpringRedisCaptchaCache(RedisTemplate redisTemplate, String redisKeyPrefix, int livetime) {

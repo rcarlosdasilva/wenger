@@ -42,11 +42,11 @@ public class MqHandler implements SmartInitializingSingleton, DisposableBean {
   private List<AbstractConsumer> consumers;
   @Autowired(required = false)
   private LocalTransactionChecker localTransactionChecker;
-  private Map<String, NormalProducer> normalProducers = Maps.newHashMap();
-  private Map<String, OrderedProducer> orderedProducers = Maps.newHashMap();
-  private Map<String, TransactionalProducer> transactionalProducers = Maps.newHashMap();
-  private List<Consumer> normalConsumers = Lists.newArrayList();
-  private List<OrderConsumer> orderedConsumers = Lists.newArrayList();
+  private final Map<String, NormalProducer> normalProducers = Maps.newHashMap();
+  private final Map<String, OrderedProducer> orderedProducers = Maps.newHashMap();
+  private final Map<String, TransactionalProducer> transactionalProducers = Maps.newHashMap();
+  private final List<Consumer> normalConsumers = Lists.newArrayList();
+  private final List<OrderConsumer> orderedConsumers = Lists.newArrayList();
 
   @Override
   public void afterSingletonsInstantiated() {

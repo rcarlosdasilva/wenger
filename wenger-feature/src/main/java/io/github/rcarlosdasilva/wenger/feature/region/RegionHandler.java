@@ -3,6 +3,7 @@ package io.github.rcarlosdasilva.wenger.feature.region;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Strings;
+import com.google.common.base.Optional;
 import com.google.common.collect.*;
 import io.github.rcarlosdasilva.kits.string.TextHelper;
 import io.github.rcarlosdasilva.wenger.feature.config.AppProperties;
@@ -122,19 +123,19 @@ public class RegionHandler implements SmartInitializingSingleton {
   }
 
   private boolean isProvince(String code) {
-    return code != null && code.matches(RegionConst.DEFAULT_PROVINCE_PATTERN);
+    return code != null && code.matches(RegionConstant.DEFAULT_PROVINCE_PATTERN);
   }
 
   private boolean isCity(String code) {
-    return code != null && code.matches(RegionConst.DEFAULT_CITY_PATTERN);
+    return code != null && code.matches(RegionConstant.DEFAULT_CITY_PATTERN);
   }
 
   private String fragmentProvince(String code) {
-    return TextHelper.concat(TextHelper.sub(code, 0, 2), RegionConst.PROVINCE_SUFFIX);
+    return TextHelper.concat(TextHelper.sub(code, 0, 2), RegionConstant.PROVINCE_SUFFIX);
   }
 
   private String fragmentCity(String code) {
-    return TextHelper.concat(TextHelper.sub(code, 0, 4), RegionConst.CITY_SUFFIX);
+    return TextHelper.concat(TextHelper.sub(code, 0, 4), RegionConstant.CITY_SUFFIX);
   }
 
   /**
@@ -186,7 +187,7 @@ public class RegionHandler implements SmartInitializingSingleton {
    * @return name
    */
   public Optional<String> getName(String code) {
-    return code == null ? Optional.empty() : Optional.ofNullable(mapping.get(code));
+    return code == null ? Optional.absent() : Optional.fromNullable(mapping.get(code));
   }
 
   /**
@@ -197,7 +198,7 @@ public class RegionHandler implements SmartInitializingSingleton {
    * @return code
    */
   public Optional<String> getCode(String name) {
-    return name == null ? Optional.empty() : Optional.ofNullable(mapping.inverse().get(name));
+    return name == null ? Optional.absent() : Optional.fromNullable(mapping.inverse().get(name));
   }
 
   /**

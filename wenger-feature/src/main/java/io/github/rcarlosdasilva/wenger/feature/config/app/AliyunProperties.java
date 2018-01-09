@@ -1,6 +1,7 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app;
 
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MqProperties;
+import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.OssProperties;
 import lombok.Data;
 
 /**
@@ -23,5 +24,9 @@ public class AliyunProperties {
    * 消息队列配置
    */
   private MqProperties mq = new MqProperties();
+  /**
+   * 文件存储配置
+   */
+  private OssProperties oss = new OssProperties();
 
 }

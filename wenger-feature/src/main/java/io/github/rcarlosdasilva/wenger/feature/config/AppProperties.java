@@ -15,6 +15,10 @@ public class AppProperties {
   public static final String APP_PREFIX = "app";
 
   /**
+   * 临时文件目录，默认取系统临时目录
+   */
+  private String tempDir;
+  /**
    * 更多配置
    */
   private MiscProperties misc = new MiscProperties();

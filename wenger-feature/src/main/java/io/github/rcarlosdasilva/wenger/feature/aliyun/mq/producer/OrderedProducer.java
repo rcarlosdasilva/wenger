@@ -18,7 +18,7 @@ public class OrderedProducer extends AbstractProducer {
 
   private static final String DEFAULT_GLOBAL_REGION = "GLOBAL";
 
-  private OrderProducer producer;
+  private final OrderProducer producer;
 
   public OrderedProducer(Properties config) {
     this.producer = ONSFactory.createOrderProducer(config);
