@@ -1,5 +1,6 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app;
 
+import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.GreenProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MqProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.OssProperties;
 import lombok.Data;
@@ -28,5 +29,9 @@ public class AliyunProperties {
    * 文件存储配置
    */
   private OssProperties oss = new OssProperties();
+  /**
+   * 内容安全配置
+   */
+  private GreenProperties green = new GreenProperties();
 
 }

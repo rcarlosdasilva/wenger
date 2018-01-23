@@ -110,6 +110,9 @@ public class OssHandler implements SmartInitializingSingleton, DisposableBean {
     }
   }
 
+  //todo 删除文件方法
+  //todo 视频截帧方法
+
   /**
    * 上传文件.
    *
