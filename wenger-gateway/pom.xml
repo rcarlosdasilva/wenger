@@ -13,10 +13,6 @@
   <packaging>jar</packaging>
   <description>Gateway - API网关</description>
 
-  <properties>
-    <jjwt.version>0.7.0</jjwt.version>
-  </properties>
-
   <dependencies>
     <!-- Project Modules -->
     <dependency>

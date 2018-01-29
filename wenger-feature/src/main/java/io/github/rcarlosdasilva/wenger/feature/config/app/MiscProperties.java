@@ -1,12 +1,12 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app;
 
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.*;
-import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 系统杂项功能配置
  */
-@Data
+@ConfigurationProperties(prefix = "app.misc")
 public class MiscProperties {
 
   /**
@@ -30,4 +30,43 @@ public class MiscProperties {
    */
   private IpProperties ip = new IpProperties();
 
+  public MailProperties getMail() {
+    return mail;
+  }
+
+  public void setMail(MailProperties mail) {
+    this.mail = mail;
+  }
+
+  public RegionProperties getRegion() {
+    return region;
+  }
+
+  public void setRegion(RegionProperties region) {
+    this.region = region;
+  }
+
+  public SequenceProperties getSequence() {
+    return sequence;
+  }
+
+  public void setSequence(SequenceProperties sequence) {
+    this.sequence = sequence;
+  }
+
+  public CaptchaProperties getCaptcha() {
+    return captcha;
+  }
+
+  public void setCaptcha(CaptchaProperties captcha) {
+    this.captcha = captcha;
+  }
+
+  public IpProperties getIp() {
+    return ip;
+  }
+
+  public void setIp(IpProperties ip) {
+    this.ip = ip;
+  }
 }
