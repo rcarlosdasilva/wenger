@@ -14,7 +14,7 @@ public class MiscProperties {
    */
   private MailProperties mail = new MailProperties();
   /**
-   * 地域（国内）配置
+   * 地域（暂时仅支持国内）配置
    */
   private RegionProperties region = new RegionProperties();
   /**
