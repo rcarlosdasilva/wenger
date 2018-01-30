@@ -14,47 +14,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * 时间起始标记点（2015年1月1日0时0分0秒），作为基准，一般取系统的最近时间（一旦确定不能变动）
- */
-internal const val TWEPOCH = 1420041600000L
-/**
- * 机器id所占的位数
- */
-internal const val WORKER_ID_BITS = 5
-/**
- * 数据标识id所占的位数
- */
-internal const val DATACENTER_ID_BITS = 5
-/**
- * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
- */
-internal const val MAX_WORKER_ID = (-1L).shl(WORKER_ID_BITS).inv()
-/**
- * 支持的最大数据标识id，结果是31
- */
-internal const val MAX_DATACENTER_ID = (-1L).shl(DATACENTER_ID_BITS).inv()
-/**
- * 序列在id中占的位数
- */
-internal const val SEQUENCE_BITS = 12
-/**
- * 机器ID向左移12位
- */
-internal const val WORKER_ID_SHIFT = SEQUENCE_BITS
-/**
- * 数据标识id向左移17位(12+5)
- */
-internal const val DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS
-/**
- * 时间截向左移22位(5+5+12)
- */
-internal const val TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS
-/**
- * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
- */
-internal const val SEQUENCE_MASK = (-1L).shl(SEQUENCE_BITS).inv()
-
-/**
  * 获取基于Snowflake算法的ID
  *
  * 借用 http://git.oschina.net/yu120/sequence
@@ -179,6 +138,49 @@ class SequenceHandler @Autowired constructor(
 
     // 移位并通过或运算拼到一起组成64位的ID
     return (timestamp - TWEPOCH).shl(TIMESTAMP_LEFT_SHIFT) or host.dataCenterId or host.workerId or sequence
+  }
+
+  companion object {
+    /**
+     * 时间起始标记点（2015年1月1日0时0分0秒），作为基准，一般取系统的最近时间（一旦确定不能变动）
+     */
+    private const val TWEPOCH = 1420041600000L
+    /**
+     * 机器id所占的位数
+     */
+    private const val WORKER_ID_BITS = 5
+    /**
+     * 数据标识id所占的位数
+     */
+    private const val DATACENTER_ID_BITS = 5
+    /**
+     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)
+     */
+    private const val MAX_WORKER_ID = (-1L).shl(WORKER_ID_BITS).inv()
+    /**
+     * 支持的最大数据标识id，结果是31
+     */
+    private const val MAX_DATACENTER_ID = (-1L).shl(DATACENTER_ID_BITS).inv()
+    /**
+     * 序列在id中占的位数
+     */
+    private const val SEQUENCE_BITS = 12
+    /**
+     * 机器ID向左移12位
+     */
+    private const val WORKER_ID_SHIFT = SEQUENCE_BITS
+    /**
+     * 数据标识id向左移17位(12+5)
+     */
+    private const val DATACENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS
+    /**
+     * 时间截向左移22位(5+5+12)
+     */
+    private const val TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATACENTER_ID_BITS
+    /**
+     * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)
+     */
+    private const val SEQUENCE_MASK = (-1L).shl(SEQUENCE_BITS).inv()
   }
 
 }

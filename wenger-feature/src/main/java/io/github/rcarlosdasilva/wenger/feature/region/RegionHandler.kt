@@ -22,10 +22,6 @@ import java.io.InputStreamReader
 import java.net.MalformedURLException
 import java.util.*
 
-internal const val DEFAULT_PROVINCE_PATTERN = "^[1-9]\\d0000$"
-internal const val DEFAULT_CITY_PATTERN = "^[1-9]\\d{3}00$"
-internal const val DEFAULT_DISTRICT_PATTERN = "^\\d{4}(\\d[1-9]|[1-9]\\d)$"
-
 /**
  * 地区数据解析器
  *
@@ -245,6 +241,12 @@ class RegionHandler @Autowired constructor(
    */
   fun getFullRegionName(code: String, separator: String = ""): String =
       listOf(fragment(code, 2), fragment(code, 4), code).mapNotNull { indexes[it] }.joinToString(separator)
+
+  companion object {
+    private const val DEFAULT_PROVINCE_PATTERN = "^[1-9]\\d0000$"
+    private const val DEFAULT_CITY_PATTERN = "^[1-9]\\d{3}00$"
+    private const val DEFAULT_DISTRICT_PATTERN = "^\\d{4}(\\d[1-9]|[1-9]\\d)$"
+  }
 
 }
 

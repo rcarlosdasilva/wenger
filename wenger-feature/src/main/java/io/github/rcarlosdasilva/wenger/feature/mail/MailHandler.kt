@@ -64,7 +64,9 @@ class MailHandler @Autowired constructor(
       mail.bccs?.forEach(helper::addBcc)
       mail.attachments?.forEach { helper.addAttachment(it.name, it.file) }
 
-      logger.isDebugEnabled.let { logger.debug("") }
+      if (logger.isDebugEnabled) {
+        logger.debug("[邮件] - Sending：{}", mail.subject)
+      }
       javaMailSender.send(message)
     } catch (ex: MessagingException) {
       throw WengerMailException("[邮件] - 具体配置异常", ex)
