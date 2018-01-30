@@ -2,9 +2,13 @@ package io.github.rcarlosdasilva.wenger.feature.captcha;
 
 import io.github.rcarlosdasilva.kits.string.Characters;
 import io.github.rcarlosdasilva.kits.string.TextHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,32 +26,28 @@ import java.io.IOException;
  * @version 1.0
  * @since <pre>01/05/2018</pre>
  */
-@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {CaptchaHandler.class}, properties = "app.misc.captcha.enable=true", webEnvironment =
     SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration(classes = {CaptchaCacheManager.class})
+@ContextConfiguration(classes = {CaptchaCacheAdaptor.class})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CaptchaHandlerTest {
 
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
   public static final String TEST_CAPTCHA_KEY = "key";
 
   @Autowired
   private CaptchaHandler captchaHandler;
 
-  @Before
-  public void before() {
-  }
-
-  @After
-  public void after() {
-  }
+  private static String answer;
 
   /**
    * Method: justQuestion(String key)
    */
   @Test
-  public void testJustQuestion() {
+  public void test2JustQuestion() {
     String question = captchaHandler.justQuestion(TEST_CAPTCHA_KEY, 10);
+    answer = question;
     Assert.assertNotNull(question);
     Assert.assertEquals(10, question.length());
   }
@@ -56,7 +56,7 @@ public class CaptchaHandlerTest {
    * Method: image(String key)
    */
   @Test
-  public void testImage() {
+  public void test1Image() {
     BufferedImage image = captchaHandler.image(TEST_CAPTCHA_KEY);
     Assert.assertNotNull(image);
 
@@ -68,7 +68,7 @@ public class CaptchaHandlerTest {
       ImageIO.write(image, "jpg", file);
       Assert.assertTrue(file.exists());
       Assert.assertTrue(file.length() > 0);
-      log.info(file.getAbsolutePath());
+      logger.info("输出地址：{}", file.getAbsolutePath());
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -77,10 +77,10 @@ public class CaptchaHandlerTest {
   /**
    * Method: validate(String key, String answer)
    */
-  @Ignore
   @Test
-  public void testValidate() {
-    // can not test yet
+  public void test3Validate() {
+    boolean sucess = captchaHandler.validate(TEST_CAPTCHA_KEY, answer);
+    Assert.assertTrue(sucess);
   }
 
-} 
+}
