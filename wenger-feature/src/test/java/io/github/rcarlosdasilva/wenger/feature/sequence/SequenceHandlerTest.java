@@ -1,12 +1,12 @@
 package io.github.rcarlosdasilva.wenger.feature.sequence;
 
-import org.junit.After;
+import io.github.rcarlosdasilva.wenger.feature.TestBoostrap;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -19,18 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {SequenceHandler.class}, properties = "app.misc.sequence.enable=true", webEnvironment =
     SpringBootTest.WebEnvironment.NONE)
+@ContextConfiguration(classes = {TestBoostrap.class})
 public class SequenceHandlerTest {
 
   @Autowired
   private SequenceHandler sequenceHandler;
-
-  @Before
-  public void before() {
-  }
-
-  @After
-  public void after() {
-  }
 
   /**
    * Method: id()
