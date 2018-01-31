@@ -41,7 +41,9 @@ class RegionHandler @Autowired constructor(
   private lateinit var json: String
 
   override fun afterSingletonsInstantiated() {
-    val resource = load()
+    val resource = with(appProperties.misc.region) {
+      load(this.location)
+    }
 
     val properties = try {
       InputStreamReader(resource.inputStream).use {
@@ -89,17 +91,16 @@ class RegionHandler @Autowired constructor(
     toJson()
   }
 
-  private fun load(): Resource {
-    val dataLocation = appProperties.misc.region.location
+  private fun load(location: String): Resource {
     // 默认jar包内数据文件
-    var resource: Resource = ClassPathResource(dataLocation)
+    var resource: Resource = ClassPathResource(location)
 
     // 尝试URL读取
     if (!resource.exists()) {
       resource = try {
-        UrlResource(dataLocation)
+        UrlResource(location)
       } catch (ex: MalformedURLException) {
-        FileSystemResource(dataLocation) // 尝试本地文件读取
+        FileSystemResource(location) // 尝试本地文件读取
       }
     }
 
