@@ -3,14 +3,12 @@ package io.github.rcarlosdasilva.wenger.feature.config.app;
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.GreenProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MqProperties;
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.OssProperties;
-import lombok.Data;
 
 /**
  * 阿里云功能配置
  *
  * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
  */
-@Data
 public class AliyunProperties {
 
   /**
@@ -34,4 +32,43 @@ public class AliyunProperties {
    */
   private GreenProperties green = new GreenProperties();
 
+  public String getAccessId() {
+    return accessId;
+  }
+
+  public void setAccessId(String accessId) {
+    this.accessId = accessId;
+  }
+
+  public String getAccessSecret() {
+    return accessSecret;
+  }
+
+  public void setAccessSecret(String accessSecret) {
+    this.accessSecret = accessSecret;
+  }
+
+  public MqProperties getMq() {
+    return mq;
+  }
+
+  public void setMq(MqProperties mq) {
+    this.mq = mq;
+  }
+
+  public OssProperties getOss() {
+    return oss;
+  }
+
+  public void setOss(OssProperties oss) {
+    this.oss = oss;
+  }
+
+  public GreenProperties getGreen() {
+    return green;
+  }
+
+  public void setGreen(GreenProperties green) {
+    this.green = green;
+  }
 }

@@ -40,5 +40,4 @@ public class IpHandlerTest {
         detail.getCity(), detail.getIsp());
   }
 
-
 } 

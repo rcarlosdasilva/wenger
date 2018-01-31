@@ -18,6 +18,6 @@ class IpProperties : AbleProperties() {
   /**
    * ip2region算法，默认使用内存算法
    */
-  var arithmetic = IpSearchArithmetic.MEMORY
+  var arithmetic: IpSearchArithmetic = IpSearchArithmetic.MEMORY
 
 }

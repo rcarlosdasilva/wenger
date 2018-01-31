@@ -9,10 +9,10 @@ class SequenceProperties : AbleProperties() {
   /**
    * 工作ID (取值范围0~31)，默认0
    */
-  var workerId: Long = 0
+  var workerId = 0L
   /**
    * 数据中心ID (取值范围0~31)，默认0
    */
-  var dataCenterId: Long = 0
+  var dataCenterId = 0L
 
 }
