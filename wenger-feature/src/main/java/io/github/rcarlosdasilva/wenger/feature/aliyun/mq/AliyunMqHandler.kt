@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 /**
+ * 阿里云MQ功能封装
+ *
  * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
  */
 @ConditionalOnProperty(name = ["app.aliyun.mq.enable"], havingValue = "true")
