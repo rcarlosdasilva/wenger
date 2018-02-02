@@ -30,8 +30,8 @@ public class SequenceHandlerTest {
    */
   @Test
   public void testId() {
-    long id1 = sequenceHandler.id();
-    long id2 = sequenceHandler.id();
+    Long id1 = sequenceHandler.id();
+    Long id2 = sequenceHandler.id();
 
     Assert.assertNotNull(id1);
     Assert.assertNotNull(id2);
