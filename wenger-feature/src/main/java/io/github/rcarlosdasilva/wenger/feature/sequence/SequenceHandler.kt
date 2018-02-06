@@ -205,7 +205,7 @@ class SequenceHandler @Autowired constructor(
  * 100万：50,10,5.0%
  * <p>
  *
- * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
+ * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
  */
 class SystemClock private constructor() {
 

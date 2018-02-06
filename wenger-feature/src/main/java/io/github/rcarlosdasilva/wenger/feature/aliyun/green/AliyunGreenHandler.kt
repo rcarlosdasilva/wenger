@@ -253,8 +253,8 @@ class GreenContent private constructor(@field:JSONField(name = "dataId")
      */
     fun ofText(mark: String?, text: String): List<GreenContent> {
       val m = mark ?: TextHelper.random(10, Characters.NUMBERS_AND_LETTERS)
-      val contents = text.chunked(MAX_TEXT_CONTENT_LENGTH).map {
-        GreenContent(m).apply { this.content = it }
+      val contents = text.chunked(MAX_TEXT_CONTENT_LENGTH) {
+        GreenContent(m).apply { this.content = it.toString() }
       }
       (contents.size > MAX_TASK_SIZE).runIf {
         val brief = TextHelper.brief(contents[0].content, 100, "...")

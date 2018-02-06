@@ -1,6 +1,6 @@
 /**
  * IP解析
  *
- * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
+ * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
  */
 package io.github.rcarlosdasilva.wenger.feature.ip;
