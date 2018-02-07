@@ -6,6 +6,7 @@ import com.google.common.collect.*
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.RegionProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.SmartInitializingSingleton
@@ -29,9 +30,9 @@ import java.util.*
  */
 @ConditionalOnProperty(name = ["app.misc.region.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [RegionProperties::class])
 class RegionHandler @Autowired constructor(
-    private val appProperties: AppProperties
+    private val regionProperties: RegionProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -41,8 +42,8 @@ class RegionHandler @Autowired constructor(
   private lateinit var json: String
 
   override fun afterSingletonsInstantiated() {
-    val resource = with(appProperties.misc.region) {
-      load(this.location)
+    val resource = with(regionProperties) {
+      load(location)
     }
 
     val properties = try {

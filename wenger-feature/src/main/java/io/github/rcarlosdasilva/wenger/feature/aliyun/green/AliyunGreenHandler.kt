@@ -19,7 +19,7 @@ import io.github.rcarlosdasilva.wenger.common.constant.GeneralConstant
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.aliyun.green.async.AsyncContentHolder
 import io.github.rcarlosdasilva.wenger.feature.aliyun.green.async.PollingProcessor
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
 import io.github.rcarlosdasilva.wenger.feature.extension.runUnless
 import org.slf4j.Logger
@@ -41,9 +41,9 @@ import kotlin.concurrent.thread
  */
 @ConditionalOnProperty(name = ["app.aliyun.green.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [AliyunProperties::class])
 class AliyunGreenHandler @Autowired constructor(
-    private val appProperties: AppProperties
+    private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -52,7 +52,7 @@ class AliyunGreenHandler @Autowired constructor(
   private lateinit var pollingProcessor: PollingProcessor
 
   override fun afterSingletonsInstantiated() {
-    with(appProperties.aliyun) {
+    with(aliyunProperties) {
       AliyunGreenHandler.region = this.green.region
       AliyunGreenHandler.isUseAsync = this.green.useAsync
 

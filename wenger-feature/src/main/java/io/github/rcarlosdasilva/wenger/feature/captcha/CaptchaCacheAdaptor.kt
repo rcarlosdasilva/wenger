@@ -2,7 +2,7 @@ package io.github.rcarlosdasilva.wenger.feature.captcha
 
 import io.github.rcarlosdasilva.wenger.feature.captcha.cache.*
 import io.github.rcarlosdasilva.wenger.feature.captcha.qa.CaptchaQa
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.CaptchaProperties
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -17,17 +17,17 @@ import org.springframework.stereotype.Component
  */
 @ConditionalOnProperty(name = ["app.misc.captcha.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [CaptchaProperties::class])
 class CaptchaCacheAdaptor @Autowired constructor(
     @Autowired(required = false) private val redisTemplate: RedisTemplate<Any, Any>?,
-    private val appProperties: AppProperties
+    private val captchaProperties: CaptchaProperties
 ) : SmartInitializingSingleton {
 
   private lateinit var captchaCache: CaptchaCache
 
   override fun afterSingletonsInstantiated() {
     // 后期完善，可在各个build方法中对缓存做进一步配置
-    with(appProperties.misc.captcha) {
+    with(captchaProperties) {
       captchaCache = when (this.cache) {
         CaptchaCacheType.CAFFEINE -> buildCaffeineCache(this.livetime)
         CaptchaCacheType.GUAVA -> buildGuavaCache(this.livetime)

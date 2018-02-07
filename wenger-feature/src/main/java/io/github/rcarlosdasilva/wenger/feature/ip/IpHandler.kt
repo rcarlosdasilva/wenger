@@ -6,7 +6,7 @@ import io.github.rcarlosdasilva.kits.string.Characters
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.kits.sys.SystemHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.IpProperties
 import org.apache.commons.lang.StringUtils
 import org.lionsoul.ip2region.DataBlock
 import org.lionsoul.ip2region.DbConfig
@@ -34,9 +34,9 @@ import java.net.MalformedURLException
  */
 @ConditionalOnProperty(name = ["app.misc.ip.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [IpProperties::class])
 class IpHandler @Autowired constructor(
-    private val appProperties: AppProperties
+    private val ipProperties: IpProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -45,7 +45,7 @@ class IpHandler @Autowired constructor(
   private lateinit var arithmetic: IpSearchArithmetic
 
   override fun afterSingletonsInstantiated() {
-    val resource: Resource = with(appProperties.misc.ip) {
+    val resource: Resource = with(ipProperties) {
       this@IpHandler.arithmetic = this.arithmetic
       load(this.location)
     }

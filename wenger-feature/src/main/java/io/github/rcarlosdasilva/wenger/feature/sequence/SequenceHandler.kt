@@ -1,7 +1,7 @@
 package io.github.rcarlosdasilva.wenger.feature.sequence
 
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.SequenceProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.SmartInitializingSingleton
@@ -41,9 +41,9 @@ import java.util.concurrent.atomic.AtomicLong
  */
 @ConditionalOnProperty(name = ["app.misc.sequence.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [SequenceProperties::class])
 class SequenceHandler @Autowired constructor(
-    private val appProperties: AppProperties
+    private val sequenceProperties: SequenceProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -59,7 +59,7 @@ class SequenceHandler @Autowired constructor(
   private var lastTimestamp = -1L
 
   override fun afterSingletonsInstantiated() {
-    with(appProperties.misc.sequence) {
+    with(sequenceProperties) {
       if (workerId !in 0..MAX_WORKER_ID) {
         throw WengerSequenceException("[ID] - WorkerId的取值超出了范围，默认0 - 31")
       }

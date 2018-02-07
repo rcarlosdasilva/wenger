@@ -7,7 +7,7 @@ import com.aliyun.openservices.ons.api.order.OrderConsumer
 import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.DisposableBean
@@ -25,11 +25,11 @@ import java.util.*
  */
 @ConditionalOnProperty(name = ["app.aliyun.mq.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [AliyunProperties::class])
 class AliyunMqHandler @Autowired constructor(
     @Autowired(required = false) private val consumers: List<AbstractConsumer>?,
     @Autowired(required = false) private val localTransactionChecker: LocalTransactionChecker?,
-    private val appProperties: AppProperties
+    private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -41,7 +41,7 @@ class AliyunMqHandler @Autowired constructor(
   private val orderedConsumers: MutableList<OrderConsumer> = mutableListOf()
 
   override fun afterSingletonsInstantiated() {
-    with(appProperties.aliyun.mq) {
+    with(aliyunProperties.mq) {
       Companion.producerSendRetries = this.producerRetries
       Companion.isPrintLog = this.printLog
 
@@ -117,19 +117,19 @@ class AliyunMqHandler @Autowired constructor(
 
   private fun producerConfig(producerId: String): Properties =
       Properties().apply {
-        this[PropertyKeyConst.AccessKey] = appProperties.aliyun.accessId
-        this[PropertyKeyConst.SecretKey] = appProperties.aliyun.accessSecret
-        this[PropertyKeyConst.ONSAddr] = appProperties.aliyun.mq.address
+        this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
+        this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
+        this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
         this[PropertyKeyConst.ProducerId] = producerId
         // 设置发送超时时间，单位毫秒
-        this[PropertyKeyConst.SendMsgTimeoutMillis] = appProperties.aliyun.mq.sendTimeout
+        this[PropertyKeyConst.SendMsgTimeoutMillis] = aliyunProperties.mq.sendTimeout
       }
 
   private fun consumerConfig(consumerId: String, threads: Int, timeout: Int): Properties =
       Properties().apply {
-        this[PropertyKeyConst.AccessKey] = appProperties.aliyun.accessId
-        this[PropertyKeyConst.SecretKey] = appProperties.aliyun.accessSecret
-        this[PropertyKeyConst.ONSAddr] = appProperties.aliyun.mq.address
+        this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
+        this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
+        this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
         this[PropertyKeyConst.ConsumerId] = consumerId
         this[PropertyKeyConst.ConsumeThreadNums] = threads
         this[PropertyKeyConst.ConsumeTimeout] = timeout

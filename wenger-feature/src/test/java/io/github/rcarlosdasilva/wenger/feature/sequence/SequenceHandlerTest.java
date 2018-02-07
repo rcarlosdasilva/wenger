@@ -38,5 +38,4 @@ public class SequenceHandlerTest {
     Assert.assertNotEquals(id1, id2);
   }
 
-
 } 

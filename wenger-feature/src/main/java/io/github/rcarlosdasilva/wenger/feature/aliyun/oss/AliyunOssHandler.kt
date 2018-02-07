@@ -11,7 +11,7 @@ import com.aliyun.oss.model.UploadFileRequest
 import com.google.common.base.Strings
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.aliyun.oss.ContentWrapper.Path
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import io.github.rcarlosdasilva.wenger.feature.context.EnvironmentHandler
 import io.github.rcarlosdasilva.wenger.feature.context.RuntimeProfile
 import org.slf4j.Logger
@@ -32,10 +32,10 @@ import java.io.InputStream
  */
 @ConditionalOnProperty(name = ["app.aliyun.oss.enable"], havingValue = "true")
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [AliyunProperties::class])
 class AliyunOssHandler @Autowired constructor(
     private val environmentHandler: EnvironmentHandler,
-    private val appProperties: AppProperties
+    private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -44,7 +44,7 @@ class AliyunOssHandler @Autowired constructor(
   private lateinit var bucket: String
 
   override fun afterSingletonsInstantiated() {
-    with(appProperties.aliyun) {
+    with(aliyunProperties) {
       if (Strings.isNullOrEmpty(this.oss.bucket)) {
         throw WengerAliyunOssException("[Aliyun:OSS] - 未配置OSS Bucket Name")
       }

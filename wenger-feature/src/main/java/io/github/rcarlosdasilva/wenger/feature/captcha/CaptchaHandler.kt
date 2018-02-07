@@ -5,7 +5,7 @@ import com.google.code.kaptcha.util.Config
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.captcha.qa.AbstractCaptchaQa
 import io.github.rcarlosdasilva.wenger.feature.captcha.qa.CaptchaQa
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.CaptchaProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.SmartInitializingSingleton
@@ -40,9 +40,9 @@ import java.util.*
 @ConditionalOnProperty(name = ["app.misc.captcha.enable"], havingValue = "true")
 @ConditionalOnBean(value = [CaptchaCacheAdaptor::class])
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class])
+@EnableConfigurationProperties(value = [CaptchaProperties::class])
 class CaptchaHandler @Autowired constructor(
-    private val appProperties: AppProperties,
+    private val captchaProperties: CaptchaProperties,
     private val captchaCacheManager: CaptchaCacheAdaptor
 ) : SmartInitializingSingleton {
 
@@ -52,7 +52,7 @@ class CaptchaHandler @Autowired constructor(
   private lateinit var qaClass: Class<out AbstractCaptchaQa>
 
   override fun afterSingletonsInstantiated() {
-    with(appProperties.misc.captcha) {
+    with(captchaProperties) {
       try {
         Class.forName(this.qa.name)
       } catch (ex: ClassNotFoundException) {
