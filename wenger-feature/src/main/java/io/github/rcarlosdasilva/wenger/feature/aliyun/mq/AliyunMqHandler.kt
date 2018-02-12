@@ -26,10 +26,10 @@ import java.util.*
 @ConditionalOnProperty(name = ["app.aliyun.mq.enable"], havingValue = "true")
 @Component
 @EnableConfigurationProperties(value = [AliyunProperties::class])
-class AliyunMqHandler @Autowired constructor(
-    @Autowired(required = false) private val consumers: List<AbstractConsumer>?,
-    @Autowired(required = false) private val localTransactionChecker: LocalTransactionChecker?,
-    private val aliyunProperties: AliyunProperties
+class AliyunMqHandler @Autowired(required = false) constructor(
+  @Autowired(required = false) private val consumers: List<AbstractConsumer>?,
+  @Autowired(required = false) private val localTransactionChecker: LocalTransactionChecker?,
+  private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -89,14 +89,24 @@ class AliyunMqHandler @Autowired constructor(
           this.subscribe(it.topic(), TextHelper.join("||", it.tags()), it.orderedListener())
           this.start()
           orderedConsumers.add(this)
-          logger.info("[Aliyun:MQ] - 注册顺序消息消费者(ORDERED CONSUMER)：Topic: {}, CID: {}, Tags: {}", it.topic(), it.consumerId(), it.tags())
+          logger.info(
+            "[Aliyun:MQ] - 注册顺序消息消费者(ORDERED CONSUMER)：Topic: {}, CID: {}, Tags: {}",
+            it.topic(),
+            it.consumerId(),
+            it.tags()
+          )
         }
       } else {
         ONSFactory.createConsumer(config).apply {
           this.subscribe(it.topic(), TextHelper.join("||", it.tags()), it.normalListener())
           this.start()
           normalConsumers.add(this)
-          logger.info("[Aliyun:MQ] - 注册消息消费者(NORMAL CONSUMER)：Topic: {}, CID: {}, Tags: {}", it.topic(), it.consumerId(), it.tags())
+          logger.info(
+            "[Aliyun:MQ] - 注册消息消费者(NORMAL CONSUMER)：Topic: {}, CID: {}, Tags: {}",
+            it.topic(),
+            it.consumerId(),
+            it.tags()
+          )
         }
       }
     }
@@ -116,28 +126,28 @@ class AliyunMqHandler @Autowired constructor(
   fun transactional(producerId: String): TransactionalProducer? = transactionalProducers[producerId]
 
   private fun producerConfig(producerId: String): Properties =
-      Properties().apply {
-        this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
-        this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
-        this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
-        this[PropertyKeyConst.ProducerId] = producerId
-        // 设置发送超时时间，单位毫秒
-        this[PropertyKeyConst.SendMsgTimeoutMillis] = aliyunProperties.mq.sendTimeout
-      }
+    Properties().apply {
+      this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
+      this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
+      this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
+      this[PropertyKeyConst.ProducerId] = producerId
+      // 设置发送超时时间，单位毫秒
+      this[PropertyKeyConst.SendMsgTimeoutMillis] = aliyunProperties.mq.sendTimeout
+    }
 
   private fun consumerConfig(consumerId: String, threads: Int, timeout: Int): Properties =
-      Properties().apply {
-        this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
-        this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
-        this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
-        this[PropertyKeyConst.ConsumerId] = consumerId
-        this[PropertyKeyConst.ConsumeThreadNums] = threads
-        this[PropertyKeyConst.ConsumeTimeout] = timeout
-        // 顺序消息消费失败进行重试前的等待时间，单位(毫秒)
-        this[PropertyKeyConst.SuspendTimeMillis] = DEFAULT_ORDERED_MESSAGE_SUSPEND_TIME_MILLIS
-        // 消息消费失败时的最大重试次数
-        this[PropertyKeyConst.MaxReconsumeTimes] = DEFAULT_MAX_RECONSUMER_TIMES
-      }
+    Properties().apply {
+      this[PropertyKeyConst.AccessKey] = aliyunProperties.accessId
+      this[PropertyKeyConst.SecretKey] = aliyunProperties.accessSecret
+      this[PropertyKeyConst.ONSAddr] = aliyunProperties.mq.address
+      this[PropertyKeyConst.ConsumerId] = consumerId
+      this[PropertyKeyConst.ConsumeThreadNums] = threads
+      this[PropertyKeyConst.ConsumeTimeout] = timeout
+      // 顺序消息消费失败进行重试前的等待时间，单位(毫秒)
+      this[PropertyKeyConst.SuspendTimeMillis] = DEFAULT_ORDERED_MESSAGE_SUSPEND_TIME_MILLIS
+      // 消息消费失败时的最大重试次数
+      this[PropertyKeyConst.MaxReconsumeTimes] = DEFAULT_MAX_RECONSUMER_TIMES
+    }
 
   companion object {
     private const val DEFAULT_ORDERED_MESSAGE_SUSPEND_TIME_MILLIS = 500
@@ -169,5 +179,10 @@ class WengerAliyunMqException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }

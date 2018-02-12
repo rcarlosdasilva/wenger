@@ -22,8 +22,8 @@ import org.springframework.stereotype.Component
 @Component
 @EnableConfigurationProperties(value = [AppProperties::class])
 class EnvironmentHandler @Autowired constructor(
-    private val env: Environment,
-    private val appProperties: AppProperties
+  private val env: Environment,
+  private val appProperties: AppProperties
 ) : ContextIdApplicationContextInitializer(), BeanPostProcessor {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)

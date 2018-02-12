@@ -57,104 +57,104 @@ import javax.sql.DataSource
 @EnableTransactionManagement
 @EnableConfigurationProperties(value = [DataSourceProperties::class, MySqlProperties::class])
 open class MySqlAutoConfiguration @Autowired constructor(
-    private val dataSourceProperties: DataSourceProperties,
-    private val defaultResourceLoader: DefaultResourceLoader,
-    private val environmentHandler: EnvironmentHandler,
-    private val auditingHandler: AuditingHandler?,
-    private val mySqlProperties: MySqlProperties
+  private val dataSourceProperties: DataSourceProperties,
+  private val defaultResourceLoader: DefaultResourceLoader,
+  private val environmentHandler: EnvironmentHandler,
+  private val auditingHandler: AuditingHandler?,
+  private val mySqlProperties: MySqlProperties
 ) {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
   @Bean
   open fun dataSource(): DataSource =
-      with(mySqlProperties) {
-        val url = dataSourceProperties.url.let {
-          val markIndex = it.lastIndexOf('?') + 1
-          val query = it.substring(markIndex)
-          val fragments = query.split("&").associate { q ->
-            q.split("=").let { Pair(it[0], it[1]) }
-          }.toMutableMap()
+    with(mySqlProperties) {
+      val url = dataSourceProperties.url.let {
+        val markIndex = it.lastIndexOf('?') + 1
+        val query = it.substring(markIndex)
+        val fragments = query.split("&").associate { q ->
+          q.split("=").let { Pair(it[0], it[1]) }
+        }.toMutableMap()
 
-          // Mysql连接字符串参数 tinyInt1isBit设置为false(默认 true)，可以将bit和tinyint类型映射为boolean
-          fragments["tinyInt1isBit"] = (!this.tinyintToBoolean).toString()
+        // Mysql连接字符串参数 tinyInt1isBit设置为false(默认 true)，可以将bit和tinyint类型映射为boolean
+        fragments["tinyInt1isBit"] = (!this.tinyintToBoolean).toString()
 
-          it.substring(0, markIndex) + fragments.map { it.key + "=" + it.value }.joinToString("&")
-        }
-
-        val builder = DataSourceBuilder.create().apply {
-          this.url(url)
-          this.driverClassName(dataSourceProperties.driverClassName)
-          this.username(dataSourceProperties.username)
-          this.password(dataSourceProperties.password)
-        }
-
-        logger.info("[MySQL] - DataSource装配使用{}连接池", this.poolType)
-        when (this.poolType) {
-          MySqlPoolType.NONE -> builder.type(DriverManagerDataSource::class.java).build()
-          MySqlPoolType.DRUID -> builder.type(DruidDataSource::class.java).build().apply { configDruid(this) }
-          MySqlPoolType.C3P0 -> builder.type(ComboPooledDataSource::class.java).build().apply { configC3p0(this) }
-          MySqlPoolType.DBCP -> builder.type(BasicDataSource::class.java).build().apply { configDbcp(this) }
-          MySqlPoolType.HIKARI -> builder.type(HikariDataSource::class.java).build().apply { configHikari(this) }
-        }
+        it.substring(0, markIndex) + fragments.map { it.key + "=" + it.value }.joinToString("&")
       }
+
+      val builder = DataSourceBuilder.create().apply {
+        this.url(url)
+        this.driverClassName(dataSourceProperties.driverClassName)
+        this.username(dataSourceProperties.username)
+        this.password(dataSourceProperties.password)
+      }
+
+      logger.info("[MySQL] - DataSource装配使用{}连接池", this.poolType)
+      when (this.poolType) {
+        MySqlPoolType.NONE -> builder.type(DriverManagerDataSource::class.java).build()
+        MySqlPoolType.DRUID -> builder.type(DruidDataSource::class.java).build().apply { configDruid(this) }
+        MySqlPoolType.C3P0 -> builder.type(ComboPooledDataSource::class.java).build().apply { configC3p0(this) }
+        MySqlPoolType.DBCP -> builder.type(BasicDataSource::class.java).build().apply { configDbcp(this) }
+        MySqlPoolType.HIKARI -> builder.type(HikariDataSource::class.java).build().apply { configHikari(this) }
+      }
+    }
 
   @Bean
   open fun sqlSessionFactory(dataSource: DataSource): SqlSessionFactory =
-      MybatisSqlSessionFactoryBean().run fb@ {
-        this.setDataSource(dataSource)
-        this.vfs = SpringBootVFS::class.java
+    MybatisSqlSessionFactoryBean().run fb@ {
+      this.setDataSource(dataSource)
+      this.vfs = SpringBootVFS::class.java
 
-        with(mySqlProperties.mybatis) {
-          this.configLocation?.let { this@fb.setConfigLocation(defaultResourceLoader.getResource(it)) }
-          this.typeHandlersPackage?.let { this@fb.setTypeHandlersPackage(it) }
-          this.typeEnumsPackage?.let { this@fb.setTypeEnumsPackage(it) }
-          this.typeAliasesPackage?.let { this@fb.setTypeAliasesPackage(it) } ?: run {
-            logger.info("[MySQL] - 自动扫描继承自BasicEntity的所有Entity")
-            this@fb.setTypeAliasesSuperType(BasicEntity::class.java)
-          }
-          this.mapperLocations?.let {
-            val resourceResolver = PathMatchingResourcePatternResolver()
-            this@fb.setMapperLocations(it.flatMap { s ->
-              resourceResolver.getResources(s).toList()
-            }.toTypedArray())
-          } ?: run {
-            logger.info("[MySQL] - 自动扫描路径\"resources/storage/mapper\"下的所有Mapper XML文件")
-            this@fb.setMapperLocations(PathMatchingResourcePatternResolver().getResources("classpath:/storage/mapper/*Mapper.xml"))
-          }
-          this.configurationProperties?.let { this@fb.setConfigurationProperties(it) }
-          this@fb.setPlugins(arrayOf<Interceptor>(PaginationInterceptor()))
-
-          val mc = this.configuration ?: MybatisConfiguration()
-          mc.setDefaultScriptingLanguage(MybatisXMLLanguageDriver::class.java)
-          mc.logImpl = Slf4jImpl::class.java
-          mc.defaultExecutorType = ExecutorType.REUSE
-
-          val gc = GlobalConfiguration().apply {
-            this.setDbType(DBType.MYSQL.name)
-            // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID")
-            // 在auditingHandler.fillInsert中注入
-            this.setIdType(IdType.INPUT.key)
-            this.sqlInjector = LogicSqlInjector()
-            this.logicDeleteValue = "1"
-            this.logicNotDeleteValue = "0"
-            this.isRefresh = environmentHandler.runtimeProfile === RuntimeProfile.DEVEL
-
-            auditingHandler?.let { this.metaObjectHandler = auditingHandler }
-                ?: logger.warn("[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充")
-          }
-
-          this@fb.setConfiguration(mc)
-          this@fb.setGlobalConfig(gc)
+      with(mySqlProperties.mybatis) {
+        this.configLocation?.let { this@fb.setConfigLocation(defaultResourceLoader.getResource(it)) }
+        this.typeHandlersPackage?.let { this@fb.setTypeHandlersPackage(it) }
+        this.typeEnumsPackage?.let { this@fb.setTypeEnumsPackage(it) }
+        this.typeAliasesPackage?.let { this@fb.setTypeAliasesPackage(it) } ?: run {
+          logger.info("[MySQL] - 自动扫描继承自BasicEntity的所有Entity")
+          this@fb.setTypeAliasesSuperType(BasicEntity::class.java)
         }
-        logger.info("[MySQL] - MyBatis 自动配置完毕")
-        return this.`object`!!
+        this.mapperLocations?.let {
+          val resourceResolver = PathMatchingResourcePatternResolver()
+          this@fb.setMapperLocations(it.flatMap { s ->
+            resourceResolver.getResources(s).toList()
+          }.toTypedArray())
+        } ?: run {
+          logger.info("[MySQL] - 自动扫描路径\"resources/storage/mapper\"下的所有Mapper XML文件")
+          this@fb.setMapperLocations(PathMatchingResourcePatternResolver().getResources("classpath:/storage/mapper/*Mapper.xml"))
+        }
+        this.configurationProperties?.let { this@fb.setConfigurationProperties(it) }
+        this@fb.setPlugins(arrayOf<Interceptor>(PaginationInterceptor()))
+
+        val mc = this.configuration ?: MybatisConfiguration()
+        mc.setDefaultScriptingLanguage(MybatisXMLLanguageDriver::class.java)
+        mc.logImpl = Slf4jImpl::class.java
+        mc.defaultExecutorType = ExecutorType.REUSE
+
+        val gc = GlobalConfiguration().apply {
+          this.setDbType(DBType.MYSQL.name)
+          // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID")
+          // 在auditingHandler.fillInsert中注入
+          this.setIdType(IdType.INPUT.key)
+          this.sqlInjector = LogicSqlInjector()
+          this.logicDeleteValue = "1"
+          this.logicNotDeleteValue = "0"
+          this.isRefresh = environmentHandler.runtimeProfile === RuntimeProfile.DEVEL
+
+          auditingHandler?.let { this.metaObjectHandler = auditingHandler }
+              ?: logger.warn("[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充")
+        }
+
+        this@fb.setConfiguration(mc)
+        this@fb.setGlobalConfig(gc)
       }
+      logger.info("[MySQL] - MyBatis 自动配置完毕")
+      return this.`object`!!
+    }
 
   @Bean
   open fun sqlSessionTemplate(sqlSessionFactory: SqlSessionFactory): SqlSessionTemplate =
-      mySqlProperties.mybatis.executorType?.let { SqlSessionTemplate(sqlSessionFactory, it) }
-          ?: run { SqlSessionTemplate(sqlSessionFactory) }
+    mySqlProperties.mybatis.executorType?.let { SqlSessionTemplate(sqlSessionFactory, it) }
+        ?: run { SqlSessionTemplate(sqlSessionFactory) }
 
   private fun configDruid(druidDataSource: DruidDataSource) {
     mySqlProperties.druid ?: return

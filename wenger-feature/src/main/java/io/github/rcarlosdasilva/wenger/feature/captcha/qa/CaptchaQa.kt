@@ -70,6 +70,6 @@ abstract class AbstractCaptchaQa protected constructor() : CaptchaQa {
   open fun inspect(): Boolean = !Strings.isNullOrEmpty(this.question) && !Strings.isNullOrEmpty(this.answer)
 
   override fun toString(): String =
-      MoreObjects.toStringHelper(this).add("question", this.question).add("answer", this.answer).toString()
+    MoreObjects.toStringHelper(this).add("question", this.question).add("answer", this.answer).toString()
 
 }

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject
 import com.google.common.collect.*
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.RegionProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,7 +31,7 @@ import java.util.*
 @Component
 @EnableConfigurationProperties(value = [RegionProperties::class])
 class RegionHandler @Autowired constructor(
-    private val regionProperties: RegionProperties
+  private val regionProperties: RegionProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -190,7 +189,7 @@ class RegionHandler @Autowired constructor(
    * @return 市
    */
   fun getCities(code: String): Collection<Region> =
-      china.subs!![fragment(code, 2)]?.subs?.values ?: emptyList()
+    china.subs!![fragment(code, 2)]?.subs?.values ?: emptyList()
 
   /**
    * 根据code（市或区code），获取所有行政区
@@ -199,7 +198,7 @@ class RegionHandler @Autowired constructor(
    * @return 行政区
    */
   fun getDistricts(code: String): Collection<Region> =
-      china.subs!![fragment(code, 2)]?.subs!![fragment(code, 4)]?.subs?.values ?: emptyList()
+    china.subs!![fragment(code, 2)]?.subs!![fragment(code, 4)]?.subs?.values ?: emptyList()
 
   /**
    * 根据code，取出code下所有区域
@@ -227,10 +226,10 @@ class RegionHandler @Autowired constructor(
    * @return regions
    */
   fun getFullRegion(code: String): Collection<Region> =
-      listOf(fragment(code, 2), fragment(code, 4), code).mapNotNull {
-        val name = indexes[it]
-        if (name != null) Region(it, name) else null
-      }
+    listOf(fragment(code, 2), fragment(code, 4), code).mapNotNull {
+      val name = indexes[it]
+      if (name != null) Region(it, name) else null
+    }
 
   /**
    * 根据code，返回当前及上级所有的地区名称
@@ -242,7 +241,7 @@ class RegionHandler @Autowired constructor(
    * @return name
    */
   fun getFullRegionName(code: String, separator: String = ""): String =
-      listOf(fragment(code, 2), fragment(code, 4), code).mapNotNull { indexes[it] }.joinToString(separator)
+    listOf(fragment(code, 2), fragment(code, 4), code).mapNotNull { indexes[it] }.joinToString(separator)
 
   companion object {
     private const val DEFAULT_PROVINCE_PATTERN = "^[1-9]\\d0000$"
@@ -269,7 +268,12 @@ class WengerRegionException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }
 
 // TODO 数据Reload

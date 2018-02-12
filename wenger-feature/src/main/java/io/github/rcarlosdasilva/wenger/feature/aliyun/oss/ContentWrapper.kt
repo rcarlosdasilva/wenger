@@ -333,9 +333,9 @@ class ContentWrapper private constructor(val path: Path) : AutoCloseable {
      * @return [Path]
      */
     fun with(module: String, category: String, fileName: String, extension: Extension): ContentWrapper =
-        ContentWrapper(Path(applicationName, profile, module, category, fileName, extension)).apply {
-          this.maxAge = defaultMaxAge
-        }
+      ContentWrapper(Path(applicationName, profile, module, category, fileName, extension)).apply {
+        this.maxAge = defaultMaxAge
+      }
   }
 
   /**
@@ -346,12 +346,12 @@ class ContentWrapper private constructor(val path: Path) : AutoCloseable {
    * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
    */
   data class Path internal constructor(
-      val project: String,
-      val profile: RuntimeProfile,
-      val module: String,
-      val category: String,
-      val fileName: String,
-      val extension: Extension
+    val project: String,
+    val profile: RuntimeProfile,
+    val module: String,
+    val category: String,
+    val fileName: String,
+    val extension: Extension
   ) {
 
     /**
@@ -359,12 +359,14 @@ class ContentWrapper private constructor(val path: Path) : AutoCloseable {
      *
      * @return 路径
      */
-    fun get(): String = TextHelper.join(GeneralConstant.URL_SEPARATOR,
-        project,
-        profile.toString().toLowerCase(),
-        module,
-        category,
-        fileName) + "." + extension.toString().toLowerCase()
+    fun get(): String = TextHelper.join(
+      GeneralConstant.URL_SEPARATOR,
+      project,
+      profile.toString().toLowerCase(),
+      module,
+      category,
+      fileName
+    ) + "." + extension.toString().toLowerCase()
 
 
     fun validate() {

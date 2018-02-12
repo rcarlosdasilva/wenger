@@ -42,8 +42,8 @@ import java.util.*
 @Component
 @EnableConfigurationProperties(value = [CaptchaProperties::class])
 class CaptchaHandler @Autowired constructor(
-    private val captchaProperties: CaptchaProperties,
-    private val captchaCacheManager: CaptchaCacheAdaptor
+  private val captchaProperties: CaptchaProperties,
+  private val captchaCacheManager: CaptchaCacheAdaptor
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -119,13 +119,13 @@ class CaptchaHandler @Autowired constructor(
    * @return boolean
    */
   fun validate(key: String, answer: String): Boolean =
-      captchaCacheManager.get(key)?.run {
-        val v = this.isRight(answer)
-        if (v) {
-          captchaCacheManager.remove(key)
-        }
-        return v
-      } ?: false
+    captchaCacheManager.get(key)?.run {
+      val v = this.isRight(answer)
+      if (v) {
+        captchaCacheManager.remove(key)
+      }
+      return v
+    } ?: false
 
 }
 
@@ -134,5 +134,10 @@ class WengerCaptchaException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }

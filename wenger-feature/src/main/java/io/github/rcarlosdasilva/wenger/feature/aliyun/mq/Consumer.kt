@@ -88,36 +88,36 @@ abstract class AbstractConsumer {
   abstract fun consume(message: Message, ctxn: ConsumeContext?, ctxo: ConsumeOrderContext?): ConsumeResult
 
   internal fun normalListener(): MessageListener =
-      MessageListener { message, context ->
-        var startAt = 0L
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 新的消息：MSGID: {}, KEY: {}", message.msgID, message.key)
-          startAt = System.nanoTime()
-        }
-
-        val result = consume(message, context, null)
-
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 消息消费结束：MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
-        }
-        if (result == ConsumeResult.SUCCESS) Action.CommitMessage else Action.ReconsumeLater
+    MessageListener { message, context ->
+      var startAt = 0L
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 新的消息：MSGID: {}, KEY: {}", message.msgID, message.key)
+        startAt = System.nanoTime()
       }
+
+      val result = consume(message, context, null)
+
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 消息消费结束：MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
+      }
+      if (result == ConsumeResult.SUCCESS) Action.CommitMessage else Action.ReconsumeLater
+    }
 
   internal fun orderedListener(): MessageOrderListener =
-      MessageOrderListener { message, context ->
-        var startAt = 0L
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 新的顺序消息： MSGID: {}, KEY: {}", message.msgID, message.key)
-          startAt = System.nanoTime()
-        }
-
-        val result = consume(message, null, context)
-
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 顺序消息消费结束： MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
-        }
-        if (result == ConsumeResult.SUCCESS) OrderAction.Success else OrderAction.Suspend
+    MessageOrderListener { message, context ->
+      var startAt = 0L
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 新的顺序消息： MSGID: {}, KEY: {}", message.msgID, message.key)
+        startAt = System.nanoTime()
       }
+
+      val result = consume(message, null, context)
+
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 顺序消息消费结束： MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
+      }
+      if (result == ConsumeResult.SUCCESS) OrderAction.Success else OrderAction.Suspend
+    }
 
 }
 

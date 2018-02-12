@@ -43,7 +43,7 @@ import java.util.concurrent.atomic.AtomicLong
 @Component
 @EnableConfigurationProperties(value = [SequenceProperties::class])
 class SequenceHandler @Autowired constructor(
-    private val sequenceProperties: SequenceProperties
+  private val sequenceProperties: SequenceProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -241,5 +241,10 @@ class WengerSequenceException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }

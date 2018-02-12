@@ -34,8 +34,8 @@ import java.io.InputStream
 @Component
 @EnableConfigurationProperties(value = [AliyunProperties::class])
 class AliyunOssHandler @Autowired constructor(
-    private val environmentHandler: EnvironmentHandler,
-    private val aliyunProperties: AliyunProperties
+  private val environmentHandler: EnvironmentHandler,
+  private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -101,13 +101,13 @@ class AliyunOssHandler @Autowired constructor(
    * @return 请求结果{@link ContentWrapper}实例。使用完之后需要手动关闭其中的ObjectContent释放请求连接
    */
   fun get(path: Path): OSSObject =
-      try {
-        client.getObject(bucket, path.get())
-      } catch (ex: WengerAliyunOssException) {
-        throw WengerAliyunOssException("[Aliyun:OSS] - 下载文件失败", ex)
-      } catch (ex: ClientException) {
-        throw WengerAliyunOssException("[Aliyun:OSS] - 下载文件失败", ex)
-      }
+    try {
+      client.getObject(bucket, path.get())
+    } catch (ex: WengerAliyunOssException) {
+      throw WengerAliyunOssException("[Aliyun:OSS] - 下载文件失败", ex)
+    } catch (ex: ClientException) {
+      throw WengerAliyunOssException("[Aliyun:OSS] - 下载文件失败", ex)
+    }
 
   /**
    * 上传文件.
@@ -131,17 +131,27 @@ class AliyunOssHandler @Autowired constructor(
       val result = client.putObject(bucket, key, `is`, meta)
       return OssResult(result.requestId, result.eTag, key)
     } catch (ex: OSSException) {
-      logger.error("[Aliyun:OSS] - 服务器端异常，Error Message: {}, Error Code: {}, Request ID: {}, Host ID: {}",
-          ex.errorMessage, ex.errorCode, ex.requestId, ex.hostId)
+      logger.error(
+        "[Aliyun:OSS] - 服务器端异常，Error Message: {}, Error Code: {}, Request ID: {}, Host ID: {}",
+        ex.errorMessage, ex.errorCode, ex.requestId, ex.hostId
+      )
     } catch (ex: ClientException) {
-      logger.error("[Aliyun:OSS] - 客户端异常，Error Message: {}, Error Code: {}, Request ID: {}",
-          ex.errorMessage, ex.errorCode, ex.requestId)
+      logger.error(
+        "[Aliyun:OSS] - 客户端异常，Error Message: {}, Error Code: {}, Request ID: {}",
+        ex.errorMessage, ex.errorCode, ex.requestId
+      )
     }
 
     return OssResult.FAILED
   }
 
-  private fun uploadBreakpoint(key: String, file: File, meta: ObjectMetadata, threadNumber: Int, sizeOfPart: Long): OssResult {
+  private fun uploadBreakpoint(
+    key: String,
+    file: File,
+    meta: ObjectMetadata,
+    threadNumber: Int,
+    sizeOfPart: Long
+  ): OssResult {
     val request = UploadFileRequest(bucket, key).apply {
       this.uploadFile = file.absolutePath
       this.objectMetadata = meta
@@ -171,10 +181,10 @@ class AliyunOssHandler @Autowired constructor(
 }
 
 data class OssResult(
-    val requestId: String?,
-    val etag: String?,
-    val path: String?,
-    val success: Boolean = true
+  val requestId: String?,
+  val etag: String?,
+  val path: String?,
+  val success: Boolean = true
 ) {
   private constructor() : this(null, null, null, false)
 
@@ -188,7 +198,12 @@ class WengerAliyunOssException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }
 
 //todo 删除文件方法

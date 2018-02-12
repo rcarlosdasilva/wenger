@@ -19,10 +19,10 @@ class PrincipalHandler {
   fun clean() = t.remove()
 
   data class Principal(
-      val id: Long,
-      val username: String,
-      val code: String,
-      val token: String?
+    val id: Long,
+    val username: String,
+    val code: String,
+    val token: String?
   )
 
   companion object {

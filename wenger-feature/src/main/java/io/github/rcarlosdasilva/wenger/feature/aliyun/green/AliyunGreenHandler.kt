@@ -43,7 +43,7 @@ import kotlin.concurrent.thread
 @Component
 @EnableConfigurationProperties(value = [AliyunProperties::class])
 class AliyunGreenHandler @Autowired constructor(
-    private val aliyunProperties: AliyunProperties
+  private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -75,7 +75,11 @@ class AliyunGreenHandler @Autowired constructor(
 
   private fun send(request: AcsRequest<*>, data: String): List<GreenResult> {
     try {
-      request.setContent(data.toByteArray(GeneralConstant.DEFAULT_CHARSET), GeneralConstant.DEFAULT_ENCODING, FormatType.JSON)
+      request.setContent(
+        data.toByteArray(GeneralConstant.DEFAULT_CHARSET),
+        GeneralConstant.DEFAULT_ENCODING,
+        FormatType.JSON
+      )
       val response = client.doAction(request)
       if (!response.isSuccess) {
         logger.error("[Aliyun:GREEN] - 文本安全请求失败，response status: {}", response.status)
@@ -232,8 +236,7 @@ class AliyunGreenHandler @Autowired constructor(
 /**
  * 待检测内容，使用GreenContent.ofXXX()创建
  */
-class GreenContent private constructor(@field:JSONField(name = "dataId")
-                                       private val mark: String) : Serializable {
+class GreenContent private constructor(@JSONField(name = "dataId") private val mark: String) : Serializable {
   internal var content: String? = null
   internal var url: String? = null
 
@@ -271,7 +274,7 @@ class GreenContent private constructor(@field:JSONField(name = "dataId")
      * @return [GreenContent]
      */
     fun ofImage(mark: String?, url: String): GreenContent =
-        GreenContent(mark ?: TextHelper.random(10, Characters.NUMBERS_AND_LETTERS)).apply { this.url = url }
+      GreenContent(mark ?: TextHelper.random(10, Characters.NUMBERS_AND_LETTERS)).apply { this.url = url }
 
     /**
      * 创建图片内容
@@ -281,7 +284,7 @@ class GreenContent private constructor(@field:JSONField(name = "dataId")
      * @return [GreenContent]
      */
     fun ofImage(mark: String?, url: List<String>): List<GreenContent> =
-        url.map { ofImage(mark ?: TextHelper.random(10, Characters.NUMBERS_AND_LETTERS), it) }
+      url.map { ofImage(mark ?: TextHelper.random(10, Characters.NUMBERS_AND_LETTERS), it) }
   }
 
 }
@@ -353,7 +356,12 @@ class WengerAliyunGreenException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }
 
 // TODO 支持回调函数

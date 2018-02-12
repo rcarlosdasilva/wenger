@@ -3,7 +3,6 @@ package io.github.rcarlosdasilva.wenger.feature.mail
 import com.google.common.base.Strings
 import com.google.common.collect.Lists
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Component
 import java.io.File
 import javax.mail.MessagingException
+import io.github.rcarlosdasilva.wenger.feature.config.app.misc.MailProperties as WengerMailProperties
 
 /**
  * 依赖Spring Boot Mail的邮件发送工具类
@@ -26,11 +26,12 @@ import javax.mail.MessagingException
 @ConditionalOnProperty(name = ["app.misc.mail.enable"], havingValue = "true")
 @ConditionalOnClass(value = [JavaMailSender::class])
 @Component
-@EnableConfigurationProperties(value = [AppProperties::class, MailProperties::class])
+@EnableConfigurationProperties(value = [WengerMailProperties::class, MailProperties::class])
 class MailHandler @Autowired constructor(
-    private val appProperties: AppProperties,
-    private val mailProperties: MailProperties,
-    private val javaMailSender: JavaMailSender) {
+  private val wmailProperties: WengerMailProperties,
+  private val mailProperties: MailProperties,
+  private val javaMailSender: JavaMailSender
+) {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
@@ -55,7 +56,8 @@ class MailHandler @Autowired constructor(
     val message = javaMailSender.createMimeMessage()
     try {
       val helper = MimeMessageHelper(message, true)
-      helper.setFrom(appProperties.misc.mail.sender ?: mailProperties.username)
+      val sender = wmailProperties.sender ?: mailProperties.username
+      helper.setFrom(sender)
       receivers.forEach(helper::addTo)
       helper.setSubject(mail.subject)
       helper.setText(mail.content, mail.isHtml)
@@ -83,8 +85,10 @@ class MailHandler @Autowired constructor(
  * @param subject 邮件主题
  * @param content 邮件主体内容
  */
-data class Mail(val subject: String,
-                val content: String) {
+data class Mail(
+  val subject: String,
+  val content: String
+) {
 
   /**
    * 邮件内容是否为HTML格式
@@ -131,15 +135,22 @@ data class Mail(val subject: String,
  * @param name 文件名
  * @param file 文件
  */
-data class Attachment(val name: String,
-                      val file: File)
+data class Attachment(
+  val name: String,
+  val file: File
+)
 
 class WengerMailException : WengerRuntimeException {
   constructor() : super()
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }
 
 // TODO 发件人昵称设定

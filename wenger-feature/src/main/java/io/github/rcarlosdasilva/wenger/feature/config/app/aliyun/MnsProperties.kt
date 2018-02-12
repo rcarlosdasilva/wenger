@@ -34,10 +34,10 @@ class MnsProperties : AbleProperties() {
    * @param pollingTimeout receive message请求最长等待时间，单位为秒，默认30秒。
    */
   data class QueueProperties(
-      val name: String,
-      val receive: Boolean = false,
-      val queueReceiveSize: Int = 10,
-      val pollingTimeout: Int = 30
+    val name: String,
+    val receive: Boolean = false,
+    val queueReceiveSize: Int = 10,
+    val pollingTimeout: Int = 30
   )
 
 }

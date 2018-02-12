@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component
 @Component
 @EnableConfigurationProperties(value = [CaptchaProperties::class])
 class CaptchaCacheAdaptor @Autowired constructor(
-    @Autowired(required = false) private val redisTemplate: RedisTemplate<Any, Any>?,
-    private val captchaProperties: CaptchaProperties
+  @Autowired(required = false) private val redisTemplate: RedisTemplate<Any, Any>?,
+  private val captchaProperties: CaptchaProperties
 ) : SmartInitializingSingleton {
 
   private lateinit var captchaCache: CaptchaCache
@@ -46,6 +46,7 @@ class CaptchaCacheAdaptor @Autowired constructor(
 
   private fun buildGuavaCache(livetime: Int) = GuavaCaptchaCache(livetime)
 
-  private fun buildRedisCacheFromSpring(redisKeyPrefix: String, livetime: Int) = SpringRedisCaptchaCache(redisTemplate!!, redisKeyPrefix, livetime)
+  private fun buildRedisCacheFromSpring(redisKeyPrefix: String, livetime: Int) =
+    SpringRedisCaptchaCache(redisTemplate!!, redisKeyPrefix, livetime)
 
 }

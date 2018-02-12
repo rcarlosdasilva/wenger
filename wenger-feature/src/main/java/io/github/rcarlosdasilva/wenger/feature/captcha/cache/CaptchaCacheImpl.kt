@@ -33,7 +33,8 @@ enum class CaptchaCacheType {
  */
 class CaffeineCaptchaCache(livetime: Int) : CaptchaCache {
 
-  private val cache: CaffeineCache<String, CaptchaQa> = Caffeine.newBuilder().expireAfterWrite(livetime.toLong(), TimeUnit.MINUTES).build()
+  private val cache: CaffeineCache<String, CaptchaQa> =
+    Caffeine.newBuilder().expireAfterWrite(livetime.toLong(), TimeUnit.MINUTES).build()
 
   override fun put(key: String, qa: CaptchaQa) = cache.put(key, qa)
 
@@ -50,7 +51,8 @@ class CaffeineCaptchaCache(livetime: Int) : CaptchaCache {
  */
 class GuavaCaptchaCache(livetime: Int) : CaptchaCache {
 
-  private val cache: GuavaCache<String, CaptchaQa> = CacheBuilder.newBuilder().expireAfterWrite(livetime.toLong(), TimeUnit.MINUTES).build()
+  private val cache: GuavaCache<String, CaptchaQa> =
+    CacheBuilder.newBuilder().expireAfterWrite(livetime.toLong(), TimeUnit.MINUTES).build()
 
   override fun put(key: String, qa: CaptchaQa) = cache.put(key, qa)
 
@@ -66,22 +68,26 @@ class GuavaCaptchaCache(livetime: Int) : CaptchaCache {
  * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
  */
 class SpringRedisCaptchaCache(
-    private val redisTemplate: RedisTemplate<Any, Any>,
-    private val redisKeyPrefix: String,
-    private val livetime: Int
+  private val redisTemplate: RedisTemplate<Any, Any>,
+  private val redisKeyPrefix: String,
+  private val livetime: Int
 ) : CaptchaCache {
 
   override fun put(key: String, qa: CaptchaQa) =
-      redisTemplate.opsForValue().set(key(key), qa, livetime.toLong(), TimeUnit.MINUTES)
+    redisTemplate.opsForValue().set(key(key), qa, livetime.toLong(), TimeUnit.MINUTES)
 
   override operator fun get(key: String): Optional<CaptchaQa> =
-      Optional.ofNullable(redisTemplate.opsForValue().get(key(key)) as CaptchaQa)
+    Optional.ofNullable(redisTemplate.opsForValue().get(key(key)) as CaptchaQa)
 
   override fun remove(key: String) {
     redisTemplate.delete(key(key))
   }
 
   private fun key(mark: String): String =
-      TextHelper.concat(RedisConstant.DEFAULT_KEY_SEPARATOR, redisKeyPrefix, TextHelper.trim(mark, RedisConstant.DEFAULT_KEY_SEPARATOR))
+    TextHelper.concat(
+      RedisConstant.DEFAULT_KEY_SEPARATOR,
+      redisKeyPrefix,
+      TextHelper.trim(mark, RedisConstant.DEFAULT_KEY_SEPARATOR)
+    )
 
 }

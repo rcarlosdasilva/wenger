@@ -55,13 +55,13 @@ abstract class AbstractProducer {
    * 为方便调试，如果Key为空，则产生随机标识符，用于日志打印调试使用
    */
   protected fun mark(key: String?): String =
-      key ?: run {
-        val mark = TextHelper.random(5, Characters.NUMBERS_AND_LETTERS)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送消息：Key为空，不利于调试，将使用随机标识符({})代替，不会影响业务处理", mark)
-        }
-        mark
+    key ?: run {
+      val mark = TextHelper.random(5, Characters.NUMBERS_AND_LETTERS)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送消息：Key为空，不利于调试，将使用随机标识符({})代替，不会影响业务处理", mark)
       }
+      mark
+    }
 
 }
 
@@ -89,18 +89,18 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendSync(topic: String, tag: String, key: String?, body: Any): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送同步消息(SYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
-        }
-
-        val sr = producer.send(Message(topic, tag, k, SerializeHelper.serialize(body)))
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
-        }
-        sr.messageId
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送同步消息(SYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
       }
+
+      val sr = producer.send(Message(topic, tag, k, SerializeHelper.serialize(body)))
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
+      }
+      sr.messageId
+    }
 
   /**
    * 发送异步消息.
@@ -113,15 +113,15 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendAsync(topic: String, tag: String, key: String?, body: Any, callback: SendCallback?): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送异步消息(ASYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
-        }
-        val message = Message(topic, tag, key, SerializeHelper.serialize(body))
-        producer.sendAsync(message, callback)
-        message.msgID
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送异步消息(ASYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
       }
+      val message = Message(topic, tag, key, SerializeHelper.serialize(body))
+      producer.sendAsync(message, callback)
+      message.msgID
+    }
 
   /**
    * 发送定时消息.
@@ -135,18 +135,19 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendTiming(topic: String, tag: String, key: String?, body: Any, time: Long): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送定时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
-        }
-
-        val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)).apply { this.startDeliverTime = time })
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 定时消息：Key: {}, MessageId: {}", k, sr.messageId)
-        }
-        sr.messageId
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送定时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
       }
+
+      val sr =
+        producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)).apply { this.startDeliverTime = time })
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 定时消息：Key: {}, MessageId: {}", k, sr.messageId)
+      }
+      sr.messageId
+    }
 
   /**
    * 发送延时消息.
@@ -160,18 +161,24 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendDelay(topic: String, tag: String, key: String?, body: Any, time: Long): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送延时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
-        }
-
-        val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)).apply { this.startDeliverTime = System.currentTimeMillis() + time })
-        isPrintLog.run {
-          logger.info("[Aliyun:MQ] - 延时消息：Key: {}, MessageId: {}", k, sr.messageId)
-        }
-        sr.messageId
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送延时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
       }
+
+      val sr = producer.send(
+        Message(
+          topic,
+          tag,
+          key,
+          SerializeHelper.serialize(body)
+        ).apply { this.startDeliverTime = System.currentTimeMillis() + time })
+      isPrintLog.run {
+        logger.info("[Aliyun:MQ] - 延时消息：Key: {}, MessageId: {}", k, sr.messageId)
+      }
+      sr.messageId
+    }
 
   /**
    * 发送单向消息.
@@ -184,20 +191,20 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendOneway(topic: String, tag: String, key: String?, body: Any): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送单向消息(ONEWAY MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
-        }
-
-        val message = Message(topic, tag, key, SerializeHelper.serialize(body))
-        producer.sendOneway(message)
-
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 单向消息：Key: {}, MessageId: {}", k, message.msgID)
-        }
-        message.msgID
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送单向消息(ONEWAY MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
       }
+
+      val message = Message(topic, tag, key, SerializeHelper.serialize(body))
+      producer.sendOneway(message)
+
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 单向消息：Key: {}, MessageId: {}", k, message.msgID)
+      }
+      message.msgID
+    }
 
 }
 
@@ -227,24 +234,30 @@ class OrderedProducer(private val config: Properties) : AbstractProducer() {
    * @return 消息ID
    */
   fun sendOrder(topic: String, region: String, tag: String, key: String?, body: Any): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送顺序消息(ORDERED MESSAGE)：Topic: {}, Region: {}, Tag: {}, Key: {}", topic, region, tag, k)
-        }
-
-        val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), region)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
-        }
-        sr.messageId
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info(
+          "[Aliyun:MQ] - 发送顺序消息(ORDERED MESSAGE)：Topic: {}, Region: {}, Tag: {}, Key: {}",
+          topic,
+          region,
+          tag,
+          k
+        )
       }
+
+      val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), region)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
+      }
+      sr.messageId
+    }
 
 }
 
 class TransactionalProducer(
-    private val config: Properties,
-    checker: LocalTransactionChecker?
+  private val config: Properties,
+  checker: LocalTransactionChecker?
 ) : AbstractProducer() {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -272,18 +285,25 @@ class TransactionalProducer(
    * @param param    附加参数
    * @return 消息ID
    */
-  fun sendTransaction(topic: String, tag: String, key: String?, body: Any, executer: LocalTransactionExecuter, param: Any): String =
-      send {
-        val k = mark(key)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 发送事务消息(TRANSACTION MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
-        }
-
-        val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), executer, param)
-        isPrintLog.runIf {
-          logger.info("[Aliyun:MQ] - 事务消息：Key: {}, MessageId: {}", k, sr.messageId)
-        }
-        sr.messageId
+  fun sendTransaction(
+    topic: String,
+    tag: String,
+    key: String?,
+    body: Any,
+    executer: LocalTransactionExecuter,
+    param: Any
+  ): String =
+    send {
+      val k = mark(key)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 发送事务消息(TRANSACTION MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
       }
+
+      val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), executer, param)
+      isPrintLog.runIf {
+        logger.info("[Aliyun:MQ] - 事务消息：Key: {}, MessageId: {}", k, sr.messageId)
+      }
+      sr.messageId
+    }
 
 }

@@ -25,8 +25,10 @@ class AsyncContentHolder private constructor() {
   private val imageLock = ReentrantReadWriteLock()
   private val videoLock = ReentrantReadWriteLock()
 
-  internal data class Task(internal val type: TaskType,
-                           internal val taskId: String)
+  internal data class Task(
+    internal val type: TaskType,
+    internal val taskId: String
+  )
 
   internal enum class TaskType { IMAGE, VIDEO }
 
@@ -35,7 +37,7 @@ class AsyncContentHolder private constructor() {
 
     fun init(asyncInterval: Long) {
       INSTANCE.taskCache = Caffeine.newBuilder().expireAfterWrite(asyncInterval, TimeUnit.SECONDS)
-          .removalListener<String, Task>({ _, value, _ -> INSTANCE.readyTask.add(value) }).build()
+        .removalListener<String, Task>({ _, value, _ -> INSTANCE.readyTask.add(value) }).build()
     }
 
     fun addImageTask(taskId: String) = INSTANCE.taskCache.put(taskId, Task(TaskType.IMAGE, taskId))

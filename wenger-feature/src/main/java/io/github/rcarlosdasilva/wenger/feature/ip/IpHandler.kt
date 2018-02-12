@@ -36,7 +36,7 @@ import java.net.MalformedURLException
 @Component
 @EnableConfigurationProperties(value = [IpProperties::class])
 class IpHandler @Autowired constructor(
-    private val ipProperties: IpProperties
+  private val ipProperties: IpProperties
 ) : SmartInitializingSingleton {
 
   private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -124,7 +124,9 @@ class IpHandler @Autowired constructor(
     }
 
     val detail = IpDetail(ip)
-    val parts = dataBlock.region.split(DATA_BLOCK_REGION_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    val parts = dataBlock.region
+      .split(DATA_BLOCK_REGION_SEPARATOR.toRegex())
+      .dropLastWhile { it.isEmpty() }.toTypedArray()
     detail.country = parts[0]
     detail.area = parts[1]
     detail.province = parts[2]
@@ -168,5 +170,10 @@ class WengerIpException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
+  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    message,
+    cause,
+    enableSuppression,
+    writableStackTrace
+  )
 }
