@@ -126,6 +126,10 @@
 
     <!-- Others -->
     <dependency>
+      <groupId>io.github.microutils</groupId>
+      <artifactId>kotlin-logging</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.github.qiujiayu</groupId>
       <artifactId>autoload-cache-spring-boot-starter</artifactId>
       <optional>true</optional>

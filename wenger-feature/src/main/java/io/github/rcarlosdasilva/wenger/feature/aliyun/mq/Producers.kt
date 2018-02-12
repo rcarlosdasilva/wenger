@@ -10,8 +10,7 @@ import io.github.rcarlosdasilva.kits.string.Characters
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.feature.aliyun.mq.AliyunMqHandler.Companion.isPrintLog
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import java.util.*
 
 /**
@@ -21,7 +20,7 @@ import java.util.*
  */
 abstract class AbstractProducer {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   /**
    * 关闭MQ生产者
@@ -42,7 +41,7 @@ abstract class AbstractProducer {
       } catch (ex: WengerAliyunMqException) {
         exception = ex
         isPrintLog.runIf {
-          logger.error("[Aliyun:MQ] - 发送消息失败", ex)
+          logger.error { "[Aliyun:MQ] - 发送消息失败，Exception: $ex" }
         }
 
         Thread.sleep(1000L)
@@ -58,7 +57,7 @@ abstract class AbstractProducer {
     key ?: run {
       val mark = TextHelper.random(5, Characters.NUMBERS_AND_LETTERS)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送消息：Key为空，不利于调试，将使用随机标识符({})代替，不会影响业务处理", mark)
+        logger.info { "[Aliyun:MQ] - 发送消息：Key为空，不利于调试，将使用随机标识符($mark)代替，不会影响业务处理" }
       }
       mark
     }
@@ -70,11 +69,11 @@ abstract class AbstractProducer {
  */
 class NormalProducer(private val config: Properties) : AbstractProducer() {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private val producer: Producer = ONSFactory.createProducer(config).apply {
     this.start()
-    logger.info("[Aliyun:MQ] - 注册无序消息生产者(NORMAL PRODUCER)：PID: {}", config[PropertyKeyConst.ProducerId])
+    logger.info { "[Aliyun:MQ] - 注册无序消息生产者(NORMAL PRODUCER)：PID: ${config[PropertyKeyConst.ProducerId]}" }
   }
 
   override fun shutdown() = producer.shutdown()
@@ -92,12 +91,12 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送同步消息(SYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
+        logger.info { "[Aliyun:MQ] - 发送同步消息(SYNC MESSAGE)：Topic: $topic, Tag: $tag, Key: $k" }
       }
 
       val sr = producer.send(Message(topic, tag, k, SerializeHelper.serialize(body)))
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
+        logger.info { "[Aliyun:MQ] - 同步消息：Key: $k, MessageId: ${sr.messageId}" }
       }
       sr.messageId
     }
@@ -116,7 +115,7 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送异步消息(ASYNC MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
+        logger.info { "[Aliyun:MQ] - 发送异步消息(ASYNC MESSAGE)：Topic: $topic, Tag: $tag, Key: $k" }
       }
       val message = Message(topic, tag, key, SerializeHelper.serialize(body))
       producer.sendAsync(message, callback)
@@ -138,13 +137,13 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送定时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
+        logger.info { "[Aliyun:MQ] - 发送定时消息(TIMING MESSAGE)：Topic: $topic, Tag: $tag, Key: $k, Timing: $time" }
       }
 
       val sr =
         producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)).apply { this.startDeliverTime = time })
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 定时消息：Key: {}, MessageId: {}", k, sr.messageId)
+        logger.info { "[Aliyun:MQ] - 定时消息：Key: $k, MessageId: ${sr.messageId}" }
       }
       sr.messageId
     }
@@ -164,7 +163,7 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送延时消息(TIMING MESSAGE)：Topic: {}, Tag: {}, Key: {}, Timing: {}", topic, tag, k, time)
+        logger.info { "[Aliyun:MQ] - 发送延时消息(TIMING MESSAGE)：Topic: $topic, Tag: $tag, Key: $k, Timing: $time" }
       }
 
       val sr = producer.send(
@@ -175,7 +174,7 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
           SerializeHelper.serialize(body)
         ).apply { this.startDeliverTime = System.currentTimeMillis() + time })
       isPrintLog.run {
-        logger.info("[Aliyun:MQ] - 延时消息：Key: {}, MessageId: {}", k, sr.messageId)
+        logger.info { "[Aliyun:MQ] - 延时消息：Key: $k, MessageId: ${sr.messageId}" }
       }
       sr.messageId
     }
@@ -194,14 +193,14 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送单向消息(ONEWAY MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
+        logger.info { "[Aliyun:MQ] - 发送单向消息(ONEWAY MESSAGE)：Topic: $topic, Tag: $tag, Key: $k" }
       }
 
       val message = Message(topic, tag, key, SerializeHelper.serialize(body))
       producer.sendOneway(message)
 
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 单向消息：Key: {}, MessageId: {}", k, message.msgID)
+        logger.info { "[Aliyun:MQ] - 单向消息：Key: $k, MessageId: ${message.msgID}" }
       }
       message.msgID
     }
@@ -213,11 +212,11 @@ class NormalProducer(private val config: Properties) : AbstractProducer() {
  */
 class OrderedProducer(private val config: Properties) : AbstractProducer() {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private val producer: OrderProducer = ONSFactory.createOrderProducer(config).apply {
     this.start()
-    logger.info("[Aliyun:MQ] - 注册有序消息生产者(ORDERED PRODUCER)：PID: {}", config[PropertyKeyConst.ProducerId])
+    logger.info { "[Aliyun:MQ] - 注册有序消息生产者(ORDERED PRODUCER)：PID: ${config[PropertyKeyConst.ProducerId]}" }
   }
 
   override fun shutdown() = producer.shutdown()
@@ -237,18 +236,12 @@ class OrderedProducer(private val config: Properties) : AbstractProducer() {
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info(
-          "[Aliyun:MQ] - 发送顺序消息(ORDERED MESSAGE)：Topic: {}, Region: {}, Tag: {}, Key: {}",
-          topic,
-          region,
-          tag,
-          k
-        )
+        logger.info { "[Aliyun:MQ] - 发送顺序消息(ORDERED MESSAGE)：Topic: $topic, Region: $region, Tag: $tag, Key: $k" }
       }
 
       val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), region)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 同步消息：Key: {}, MessageId: {}", k, sr.messageId)
+        logger.info { "[Aliyun:MQ] - 同步消息：Key: $k, MessageId: ${sr.messageId}" }
       }
       sr.messageId
     }
@@ -260,7 +253,7 @@ class TransactionalProducer(
   checker: LocalTransactionChecker?
 ) : AbstractProducer() {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   init {
     checker ?: throw WengerAliyunMqException("[Aliyun:MQ] - 事务消息生产者必须提供一个LocalTransactionChecker")
@@ -268,7 +261,7 @@ class TransactionalProducer(
 
   private val producer: TransactionProducer = ONSFactory.createTransactionProducer(config, checker).apply {
     this.start()
-    logger.info("[Aliyun:MQ] - 注册事务消息生产者(TRANSACTION PRODUCER)：PID: {}", config[PropertyKeyConst.ProducerId])
+    logger.info { "[Aliyun:MQ] - 注册事务消息生产者(TRANSACTION PRODUCER)：PID: ${config[PropertyKeyConst.ProducerId]}" }
   }
 
   override fun shutdown() = producer.shutdown()
@@ -296,12 +289,12 @@ class TransactionalProducer(
     send {
       val k = mark(key)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 发送事务消息(TRANSACTION MESSAGE)：Topic: {}, Tag: {}, Key: {}", topic, tag, k)
+        logger.info { "[Aliyun:MQ] - 发送事务消息(TRANSACTION MESSAGE)：Topic: $topic, Tag: $tag, Key: $k" }
       }
 
       val sr = producer.send(Message(topic, tag, key, SerializeHelper.serialize(body)), executer, param)
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 事务消息：Key: {}, MessageId: {}", k, sr.messageId)
+        logger.info { "[Aliyun:MQ] - 事务消息：Key: $k, MessageId: ${sr.messageId}" }
       }
       sr.messageId
     }

@@ -9,8 +9,7 @@ import com.aliyun.openservices.ons.api.order.MessageOrderListener
 import com.aliyun.openservices.ons.api.order.OrderAction
 import io.github.rcarlosdasilva.wenger.feature.aliyun.mq.AliyunMqHandler.Companion.isPrintLog
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 
 /**
  * 阿里云MQ消息监听器包装类，可实现自动订阅配置
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory
  */
 abstract class AbstractConsumer {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   /**
    * 是否为集群订阅模式（默认true）.
@@ -91,14 +90,14 @@ abstract class AbstractConsumer {
     MessageListener { message, context ->
       var startAt = 0L
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 新的消息：MSGID: {}, KEY: {}", message.msgID, message.key)
+        logger.info { "[Aliyun:MQ] - 新的消息：MSGID: ${message.msgID}, KEY: ${message.key}" }
         startAt = System.nanoTime()
       }
 
       val result = consume(message, context, null)
 
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 消息消费结束：MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
+        logger.info { "[Aliyun:MQ] - 消息消费结束：MSGID: ${message.msgID}, 用时：${System.nanoTime() - startAt}ns" }
       }
       if (result == ConsumeResult.SUCCESS) Action.CommitMessage else Action.ReconsumeLater
     }
@@ -107,14 +106,14 @@ abstract class AbstractConsumer {
     MessageOrderListener { message, context ->
       var startAt = 0L
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 新的顺序消息： MSGID: {}, KEY: {}", message.msgID, message.key)
+        logger.info { "[Aliyun:MQ] - 新的顺序消息： MSGID: ${message.msgID}, KEY: ${message.key}" }
         startAt = System.nanoTime()
       }
 
       val result = consume(message, null, context)
 
       isPrintLog.runIf {
-        logger.info("[Aliyun:MQ] - 顺序消息消费结束： MSGID: {}, 用时：{}ns", message.msgID, System.nanoTime() - startAt)
+        logger.info { "[Aliyun:MQ] - 顺序消息消费结束： MSGID: ${message.msgID}, 用时：${System.nanoTime() - startAt}ns" }
       }
       if (result == ConsumeResult.SUCCESS) OrderAction.Success else OrderAction.Suspend
     }
@@ -132,3 +131,5 @@ enum class ConsumeResult {
    */
   FAILED
 }
+
+// TODO 处理isClusteringSuscribe集群模式

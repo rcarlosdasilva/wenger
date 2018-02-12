@@ -16,8 +16,7 @@ import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MnsProperties
 import io.github.rcarlosdasilva.wenger.feature.extension.applyIf
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +42,7 @@ class AliyunMnsHandler @Autowired constructor(
   private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var client: MNSClient
   private lateinit var queues: Map<String, CloudQueue>
@@ -65,29 +64,27 @@ class AliyunMnsHandler @Autowired constructor(
 
   private fun configQueue(queues: List<MnsProperties.QueueProperties>?) {
     this.queues = if (queues == null) {
-      logger.info("[Aliyun:MNS] - 未配置任何队列(QUEUE)")
+      logger.info { "[Aliyun:MNS] - 未配置任何队列(QUEUE)" }
       mapOf()
     } else {
       queues.mapNotNull { prop ->
         client.getQueueRef(prop.name).applyIf(prop.receive) {
-          logger.info("[Aliyun:MNS] - 开启新的线程用于队列({})接收消息", prop.name)
+          logger.info { "[Aliyun:MNS] - 开启新的线程用于队列(${prop.name})接收消息" }
           thread(start = true, isDaemon = true, name = "$QUEUE_THREAD_NAME${prop.name}") {
             QueueReceiver(this, prop.queueReceiveSize, prop.pollingTimeout).start()
           }
-        }.also { logger.info("[Aliyun:MNS] - 队列({})已经配置完毕", prop.name) }
+        }.also { logger.info { "[Aliyun:MNS] - 队列(${prop.name})已经配置完毕" } }
       }.associateBy { it.attributes.queueName }
     }
   }
 
   private fun configTopic(topics: List<String>?) {
     this.topics = if (topics == null) {
-      logger.info("[Aliyun:MNS] - 未配置任何主题(TOPIC)")
+      logger.info { "[Aliyun:MNS] - 未配置任何主题(TOPIC)" }
       mapOf()
     } else {
       topics.mapNotNull {
-        client.getTopicRef(it).also {
-          logger.info("[Aliyun:MNS] - 主题({})已经配置完毕", it)
-        }
+        client.getTopicRef(it).also { logger.info { "[Aliyun:MNS] - 主题($it)已经配置完毕" } }
       }.associateBy { it.attribute.topicName }
     }
   }
@@ -113,7 +110,7 @@ class AliyunMnsHandler @Autowired constructor(
     priority: Int? = 8
   ): String {
     val queue = queues[queueName] ?: run {
-      logger.isDebugEnabled.runIf { logger.info("[Aliyun:MNS] - 找不到队列{}，请检查配置", queueName) }
+      logger.warn { "[Aliyun:MNS] - 找不到队列$queueName，请检查配置" }
       return ""
     }
 
@@ -150,7 +147,7 @@ class AliyunMnsHandler @Autowired constructor(
     isRawContent: Boolean? = false
   ): String {
     val topic = topics[topicName] ?: run {
-      logger.isDebugEnabled.runIf { logger.info("[Aliyun:MNS] - 找不到主题{}，请检查配置", topicName) }
+      logger.warn { "[Aliyun:MNS] - 找不到主题$topicName，请检查配置" }
       return ""
     }
 
@@ -180,7 +177,7 @@ class AliyunMnsHandler @Autowired constructor(
     private val wait: Int,
     private val size: Int
   ) {
-    private val logger: Logger = LoggerFactory.getLogger(javaClass)
+    private val logger = KotlinLogging.logger {}
     private val queueName = queue.attributes.queueName
 
     fun start() {
@@ -189,15 +186,15 @@ class AliyunMnsHandler @Autowired constructor(
           queue.batchPopMessage(size, wait)
         } catch (ex: Exception) {
           when (ex) {
-            is ClientException -> logger.error("[Aliyun:MNS] - 和MNS服务器之间的网络连接出现问题", ex)
+            is ClientException -> logger.error { "[Aliyun:MNS] - 和MNS服务器之间的网络连接出现问题，Exception: $ex" }
             is ServiceException -> {
               if (ex.errorCode == "MessageNotExist") {
-                logger.isTraceEnabled.runIf { logger.trace("[Aliyun:MNS] - 当前无活跃的消息") }
+                logger.trace { "[Aliyun:MNS] - 当前无活跃的消息" }
                 continue@loop
               }
-              logger.error("[Aliyun:MNS] - 请求:${ex.requestId}异常", ex)
+              logger.error { "[Aliyun:MNS] - 消息:${ex.requestId}异常，Exception: $ex" }
             }
-            else -> logger.error("[Aliyun:MNS] - 未知异常")
+            else -> logger.error { "[Aliyun:MNS] - 未知异常" }
           }
           null
         }
@@ -205,13 +202,7 @@ class AliyunMnsHandler @Autowired constructor(
         messages?.forEach { msg ->
           queueReceivers?.forEach { rcv ->
             runIf(rcv.support(queueName, msg.priority, msg.enqueueTime, msg.dequeueCount)) {
-              logger.isDebugEnabled.runIf {
-                logger.debug(
-                  "[Aliyun:MNS] - 接收到新的消息: (queue) {}, (message id) {}",
-                  queueName,
-                  msg.messageId
-                )
-              }
+              logger.debug { "[Aliyun:MNS] - 接收到新的消息: (queue) $queueName, (message id) ${msg.messageId}" }
               rcv.process(QueueMessageWrapper(msg, queue))
             }
           }
@@ -294,7 +285,12 @@ class WengerAliyunMnsException : WengerRuntimeException {
   constructor(message: String?) : super(message)
   constructor(message: String?, cause: Throwable?) : super(message, cause)
   constructor(cause: Throwable?) : super(cause)
-  constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+  constructor(
+    message: String?,
+    cause: Throwable?,
+    enableSuppression: Boolean,
+    writableStackTrace: Boolean
+  ) : super(
     message,
     cause,
     enableSuppression,

@@ -14,9 +14,8 @@ import io.github.rcarlosdasilva.wenger.feature.aliyun.oss.AliyunOssHandler.Compa
 import io.github.rcarlosdasilva.wenger.feature.aliyun.oss.AliyunOssHandler.Companion.tempDir
 import io.github.rcarlosdasilva.wenger.feature.context.RuntimeProfile
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
+import mu.KotlinLogging
 import org.joda.time.DateTime
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.util.MimeTypeUtils
 import org.springframework.util.StreamUtils
 import java.io.*
@@ -31,7 +30,7 @@ import java.nio.file.Files
  */
 class ContentWrapper private constructor(val path: Path) : AutoCloseable {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private var `object`: Any? = null
   private var type: ObjectType? = null
@@ -122,12 +121,12 @@ class ContentWrapper private constructor(val path: Path) : AutoCloseable {
   private fun identifyRealType(): Extension? {
     val signature = FileHelper.type(stream!!)
     if (signature == null) {
-      logger.warn("[Aliyun:OSS] - 无法识别正确的文件类型")
+      logger.warn { "[Aliyun:OSS] - 无法识别正确的文件类型" }
       return null
     }
     val ext = Extension[signature]
     if (ext == null) {
-      logger.warn("[Aliyun:OSS] - 文件头中未匹配到已知的类型，将使用指定的文件类型")
+      logger.warn { "[Aliyun:OSS] - 文件头中未匹配到已知的类型，将使用指定的文件类型" }
     }
     return ext
   }

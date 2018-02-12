@@ -1,8 +1,7 @@
 package io.github.rcarlosdasilva.wenger.feature.aliyun.green.async
 
 import io.github.rcarlosdasilva.wenger.feature.aliyun.green.AliyunGreenHandler
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 
 /**
  * 异步检测结果轮询处理器
@@ -11,7 +10,7 @@ import org.slf4j.LoggerFactory
  */
 class PollingProcessor(private val handler: AliyunGreenHandler) {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private var sleepTime = DEFAULT_SLEEP_TIME
 
@@ -22,7 +21,7 @@ class PollingProcessor(private val handler: AliyunGreenHandler) {
       try {
         Thread.sleep(sleepTime)
       } catch (ex: InterruptedException) {
-        logger.error("[Aliyun:GREEN] - ", ex)
+        logger.error { "[Aliyun:GREEN] - Exception: $ex" }
         Thread.currentThread().interrupt()
       }
     }

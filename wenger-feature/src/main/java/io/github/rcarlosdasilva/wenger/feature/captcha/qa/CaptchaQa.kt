@@ -2,8 +2,7 @@ package io.github.rcarlosdasilva.wenger.feature.captcha.qa
 
 import com.google.common.base.MoreObjects
 import com.google.common.base.Strings
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 
 /**
  * 验证码问题答案对
@@ -39,7 +38,7 @@ interface CaptchaQa {
  */
 abstract class AbstractCaptchaQa protected constructor() : CaptchaQa {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   var question: String? = null
   protected var answer: String? = null
@@ -47,9 +46,7 @@ abstract class AbstractCaptchaQa protected constructor() : CaptchaQa {
   override fun make(seed: Any?) {
     make(seed)
 
-    if (logger.isDebugEnabled) {
-      logger.debug("[验证码] - 普通文本验证码：Q - {}, A - {}", question, answer)
-    }
+    logger.debug { "[验证码] - 普通文本验证码：Q - $question, A - $answer" }
   }
 
   /**

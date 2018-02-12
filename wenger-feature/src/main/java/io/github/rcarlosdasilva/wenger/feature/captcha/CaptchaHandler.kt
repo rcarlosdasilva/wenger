@@ -6,8 +6,7 @@ import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.captcha.qa.AbstractCaptchaQa
 import io.github.rcarlosdasilva.wenger.feature.captcha.qa.CaptchaQa
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.CaptchaProperties
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
@@ -46,7 +45,7 @@ class CaptchaHandler @Autowired constructor(
   private val captchaCacheManager: CaptchaCacheAdaptor
 ) : SmartInitializingSingleton {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var kaptcha: DefaultKaptcha
   private lateinit var qaClass: Class<out AbstractCaptchaQa>
@@ -97,9 +96,7 @@ class CaptchaHandler @Autowired constructor(
     }
 
     captchaCacheManager.put(key, qa)
-    if (logger.isDebugEnabled) {
-      logger.debug("[验证码] - 生成 {}：{}", key, qa.question)
-    }
+    logger.debug { "[验证码] - 生成 $key：${qa.question}" }
     return qa.question!!
   }
 

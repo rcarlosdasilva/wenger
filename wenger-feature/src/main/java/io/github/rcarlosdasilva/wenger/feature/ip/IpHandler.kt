@@ -7,13 +7,12 @@ import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.kits.sys.SystemHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.IpProperties
+import mu.KotlinLogging
 import org.apache.commons.lang.StringUtils
 import org.lionsoul.ip2region.DataBlock
 import org.lionsoul.ip2region.DbConfig
 import org.lionsoul.ip2region.DbMakerConfigException
 import org.lionsoul.ip2region.DbSearcher
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -39,7 +38,7 @@ class IpHandler @Autowired constructor(
   private val ipProperties: IpProperties
 ) : SmartInitializingSingleton {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var searcher: DbSearcher
   private lateinit var arithmetic: IpSearchArithmetic
@@ -101,7 +100,7 @@ class IpHandler @Autowired constructor(
    */
   fun detail(ip: String): IpDetail {
     if (!AddressHelper.isLegalIpv4(ip)) {
-      logger.warn("[IP] - 不规范的IP地址：{}", ip)
+      logger.warn { "[IP] - 不规范的IP地址：$ip" }
       return IpDetail(ip)
     }
 
@@ -120,7 +119,7 @@ class IpHandler @Autowired constructor(
 
   private fun convert(ip: String, dataBlock: DataBlock): IpDetail {
     if (StringUtils.isBlank(dataBlock.region)) {
-      logger.warn("[IP] - 搜索不到IP的详情：{}", ip)
+      logger.warn { "[IP] - 搜索不到IP的详情：$ip" }
     }
 
     val detail = IpDetail(ip)

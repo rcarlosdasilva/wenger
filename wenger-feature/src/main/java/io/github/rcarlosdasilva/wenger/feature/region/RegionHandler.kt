@@ -6,8 +6,7 @@ import com.google.common.collect.*
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.RegionProperties
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -34,7 +33,7 @@ class RegionHandler @Autowired constructor(
   private val regionProperties: RegionProperties
 ) : SmartInitializingSingleton {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private val china = Region("+86", "中国")
   private lateinit var indexes: BiMap<String, String> // 区域可逆键值索引，用于速查
@@ -70,7 +69,7 @@ class RegionHandler @Autowired constructor(
         isProvince(it) -> tempProvinces[it] = Region(it, name)
         isCity(it) -> tempCities.put(fragment(it, 2), Region(it, name))
         isDistrict(it) -> tempDistricts.put(fragment(it, 4), Region(it, name))
-        else -> logger.warn("[区域] - 有不合法数据：{}", it)
+        else -> logger.warn { "[区域] - 有不合法数据：$it" }
       }
     }
 

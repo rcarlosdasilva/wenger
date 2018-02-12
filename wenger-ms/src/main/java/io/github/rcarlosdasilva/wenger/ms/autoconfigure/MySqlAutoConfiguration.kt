@@ -17,6 +17,7 @@ import io.github.rcarlosdasilva.wenger.ms.arc.BasicEntity
 import io.github.rcarlosdasilva.wenger.ms.arc.BasicMapper
 import io.github.rcarlosdasilva.wenger.ms.config.microservice.MySqlProperties
 import io.github.rcarlosdasilva.wenger.ms.handler.mybatis.AuditingHandler
+import mu.KotlinLogging
 import org.apache.commons.dbcp2.BasicDataSource
 import org.apache.ibatis.io.VFS
 import org.apache.ibatis.logging.slf4j.Slf4jImpl
@@ -25,8 +26,6 @@ import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSessionFactory
 import org.mybatis.spring.SqlSessionTemplate
 import org.mybatis.spring.annotation.MapperScan
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
@@ -64,7 +63,7 @@ open class MySqlAutoConfiguration @Autowired constructor(
   private val mySqlProperties: MySqlProperties
 ) {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   @Bean
   open fun dataSource(): DataSource =
@@ -89,7 +88,7 @@ open class MySqlAutoConfiguration @Autowired constructor(
         this.password(dataSourceProperties.password)
       }
 
-      logger.info("[MySQL] - DataSource装配使用{}连接池", this.poolType)
+      logger.info { "[MySQL] - DataSource装配使用${this.poolType}连接池" }
       when (this.poolType) {
         MySqlPoolType.NONE -> builder.type(DriverManagerDataSource::class.java).build()
         MySqlPoolType.DRUID -> builder.type(DruidDataSource::class.java).build().apply { configDruid(this) }
@@ -110,7 +109,7 @@ open class MySqlAutoConfiguration @Autowired constructor(
         this.typeHandlersPackage?.let { this@fb.setTypeHandlersPackage(it) }
         this.typeEnumsPackage?.let { this@fb.setTypeEnumsPackage(it) }
         this.typeAliasesPackage?.let { this@fb.setTypeAliasesPackage(it) } ?: run {
-          logger.info("[MySQL] - 自动扫描继承自BasicEntity的所有Entity")
+          logger.info { "[MySQL] - 自动扫描继承自BasicEntity的所有Entity" }
           this@fb.setTypeAliasesSuperType(BasicEntity::class.java)
         }
         this.mapperLocations?.let {
@@ -119,7 +118,7 @@ open class MySqlAutoConfiguration @Autowired constructor(
             resourceResolver.getResources(s).toList()
           }.toTypedArray())
         } ?: run {
-          logger.info("[MySQL] - 自动扫描路径\"resources/storage/mapper\"下的所有Mapper XML文件")
+          logger.info { "[MySQL] - 自动扫描路径\"resources/storage/mapper\"下的所有Mapper XML文件" }
           this@fb.setMapperLocations(PathMatchingResourcePatternResolver().getResources("classpath:/storage/mapper/*Mapper.xml"))
         }
         this.configurationProperties?.let { this@fb.setConfigurationProperties(it) }
@@ -141,13 +140,13 @@ open class MySqlAutoConfiguration @Autowired constructor(
           this.isRefresh = environmentHandler.runtimeProfile === RuntimeProfile.DEVEL
 
           auditingHandler?.let { this.metaObjectHandler = auditingHandler }
-              ?: logger.warn("[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充")
+              ?: logger.warn { "[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充" }
         }
 
         this@fb.setConfiguration(mc)
         this@fb.setGlobalConfig(gc)
       }
-      logger.info("[MySQL] - MyBatis 自动配置完毕")
+      logger.info { "[MySQL] - MyBatis 自动配置完毕" }
       return this.`object`!!
     }
 

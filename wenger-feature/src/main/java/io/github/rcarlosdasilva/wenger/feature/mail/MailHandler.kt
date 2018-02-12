@@ -3,8 +3,7 @@ package io.github.rcarlosdasilva.wenger.feature.mail
 import com.google.common.base.Strings
 import com.google.common.collect.Lists
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -33,7 +32,7 @@ class MailHandler @Autowired constructor(
   private val javaMailSender: JavaMailSender
 ) {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private fun Mail.validate() {
     val msg = when {
@@ -66,9 +65,7 @@ class MailHandler @Autowired constructor(
       mail.bccs?.forEach(helper::addBcc)
       mail.attachments?.forEach { helper.addAttachment(it.name, it.file) }
 
-      if (logger.isDebugEnabled) {
-        logger.debug("[邮件] - Sending：{}", mail.subject)
-      }
+      logger.debug { "[邮件] - Sending：${mail.subject}" }
       javaMailSender.send(message)
     } catch (ex: MessagingException) {
       throw WengerMailException("[邮件] - 具体配置异常", ex)

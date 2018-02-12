@@ -22,8 +22,7 @@ import io.github.rcarlosdasilva.wenger.feature.aliyun.green.async.PollingProcess
 import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import io.github.rcarlosdasilva.wenger.feature.extension.runIf
 import io.github.rcarlosdasilva.wenger.feature.extension.runUnless
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -46,7 +45,7 @@ class AliyunGreenHandler @Autowired constructor(
   private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var client: IAcsClient
   private lateinit var pollingProcessor: PollingProcessor
@@ -82,7 +81,7 @@ class AliyunGreenHandler @Autowired constructor(
       )
       val response = client.doAction(request)
       if (!response.isSuccess) {
-        logger.error("[Aliyun:GREEN] - 文本安全请求失败，response status: {}", response.status)
+        logger.error { "[Aliyun:GREEN] - 文本安全请求失败，response status: ${response.status}" }
         return emptyList()
       }
 
@@ -116,7 +115,7 @@ class AliyunGreenHandler @Autowired constructor(
     val status = HttpStatus.valueOf(code)
 
     status.is2xxSuccessful.runUnless {
-      logger.warn("文本检测结果不成功，code: {}", status)
+      logger.warn { "文本检测结果不成功，code: $status" }
       return emptyList()
     }
 
@@ -244,7 +243,7 @@ class GreenContent private constructor(@JSONField(name = "dataId") private val m
     private const val MAX_TEXT_CONTENT_LENGTH = 3999
     private const val MAX_TASK_SIZE = 100
 
-    private val logger: Logger = LoggerFactory.getLogger(GreenContent::class.java)
+    private val logger = KotlinLogging.logger {}
 
     /**
      * 创建文本内容
@@ -261,7 +260,7 @@ class GreenContent private constructor(@JSONField(name = "dataId") private val m
       }
       (contents.size > MAX_TASK_SIZE).runIf {
         val brief = TextHelper.brief(contents[0].content, 100, "...")
-        logger.warn("[Aliyun:GREEN] - 文本过长，单个任务最多4000个字符，一次请求最多100个任务，可能导致请求失败，文本开头：{}", brief)
+        logger.warn { "[Aliyun:GREEN] - 文本过长，单个任务最多4000个字符，一次请求最多100个任务，可能导致请求失败，文本开头：$brief" }
       }
       return contents
     }
@@ -349,7 +348,6 @@ class GreenResult {
     }
   }
 }
-
 
 class WengerAliyunGreenException : WengerRuntimeException {
   constructor() : super()

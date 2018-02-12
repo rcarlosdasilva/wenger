@@ -14,8 +14,7 @@ import io.github.rcarlosdasilva.wenger.feature.aliyun.oss.ContentWrapper.Path
 import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
 import io.github.rcarlosdasilva.wenger.feature.context.EnvironmentHandler
 import io.github.rcarlosdasilva.wenger.feature.context.RuntimeProfile
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,7 +37,7 @@ class AliyunOssHandler @Autowired constructor(
   private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var client: OSSClient
   private lateinit var bucket: String
@@ -63,7 +62,7 @@ class AliyunOssHandler @Autowired constructor(
     applicationName = environmentHandler.applicationName
     profile = environmentHandler.runtimeProfile
     tempDir = environmentHandler.tempDir
-    logger.info("[Aliyun:OSS] - 初始化完毕")
+    logger.info { "[Aliyun:OSS] - 初始化完毕" }
   }
 
   override fun destroy() = client.shutdown()
@@ -131,15 +130,9 @@ class AliyunOssHandler @Autowired constructor(
       val result = client.putObject(bucket, key, `is`, meta)
       return OssResult(result.requestId, result.eTag, key)
     } catch (ex: OSSException) {
-      logger.error(
-        "[Aliyun:OSS] - 服务器端异常，Error Message: {}, Error Code: {}, Request ID: {}, Host ID: {}",
-        ex.errorMessage, ex.errorCode, ex.requestId, ex.hostId
-      )
+      logger.error { "[Aliyun:OSS] - 服务器端异常，Error Message: ${ex.errorMessage}, Error Code: ${ex.errorCode}, Request ID: ${ex.requestId}, Host ID: ${ex.hostId}" }
     } catch (ex: ClientException) {
-      logger.error(
-        "[Aliyun:OSS] - 客户端异常，Error Message: {}, Error Code: {}, Request ID: {}",
-        ex.errorMessage, ex.errorCode, ex.requestId
-      )
+      logger.error { "[Aliyun:OSS] - 客户端异常，Error Message: ${ex.errorMessage}, Error Code: ${ex.errorCode}, Request ID: ${ex.requestId}" }
     }
 
     return OssResult.FAILED
@@ -164,12 +157,11 @@ class AliyunOssHandler @Autowired constructor(
       val result = client.uploadFile(request).multipartUploadResult
       return OssResult(result.requestId, result.eTag, key)
     } catch (ex: Throwable) {
-      logger.error("[Aliyun:OSS] - 断点续传异常", ex)
+      logger.error { "[Aliyun:OSS] - 断点续传异常，Exception: $ex" }
     }
 
     return OssResult.FAILED
   }
-
 
   companion object {
     var defaultMaxAge = -1L

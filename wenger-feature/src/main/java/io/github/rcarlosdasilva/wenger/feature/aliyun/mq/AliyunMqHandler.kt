@@ -8,8 +8,7 @@ import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker
 import io.github.rcarlosdasilva.kits.string.TextHelper
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.config.app.AliyunProperties
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,7 @@ class AliyunMqHandler @Autowired(required = false) constructor(
   private val aliyunProperties: AliyunProperties
 ) : SmartInitializingSingleton, DisposableBean {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private val normalProducers: MutableMap<String, NormalProducer> = mutableMapOf()
   private val orderedProducers: MutableMap<String, OrderedProducer> = mutableMapOf()
@@ -52,7 +51,7 @@ class AliyunMqHandler @Autowired(required = false) constructor(
 
   private fun configProducers(producers: Map<String, MqProducerType>?) {
     if (producers?.isEmpty() != false) {
-      logger.warn("[Aliyun:MQ] - 未配置消息队列生产者")
+      logger.warn { "[Aliyun:MQ] - 未配置消息队列生产者" }
       return
     }
 
@@ -61,15 +60,15 @@ class AliyunMqHandler @Autowired(required = false) constructor(
       when (it.value) {
         MqProducerType.NORMAL -> {
           normalProducers[it.key] = NormalProducer(config)
-          logger.info("[Aliyun:MQ] - 注册普通消息生产者(Normal Producer)：PID: {}", it.key)
+          logger.info { "[Aliyun:MQ] - 注册普通消息生产者(Normal Producer)：PID: ${it.key}" }
         }
         MqProducerType.ORDERED -> {
           orderedProducers[it.key] = OrderedProducer(config)
-          logger.info("[Aliyun:MQ] - 注册顺序消息生产者(Ordered Producer)：PID: {}", it.key)
+          logger.info { "[Aliyun:MQ] - 注册顺序消息生产者(Ordered Producer)：PID: ${it.key}" }
         }
         MqProducerType.TRANSACTIONAL -> {
           transactionalProducers[it.key] = TransactionalProducer(config, localTransactionChecker)
-          logger.info("[Aliyun:MQ] - 注册事务消息生产者(Transactional Producer)：PID: {}", it.key)
+          logger.info { "[Aliyun:MQ] - 注册事务消息生产者(Transactional Producer)：PID: ${it.key}" }
         }
       }
     }
@@ -77,7 +76,7 @@ class AliyunMqHandler @Autowired(required = false) constructor(
 
   private fun configConsumers(consumers: List<AbstractConsumer>?) {
     if (consumers?.isEmpty() != false) {
-      logger.warn("[Aliyun:MQ] - 未配置消息队列消费者")
+      logger.warn { "[Aliyun:MQ] - 未配置消息队列消费者" }
       return
     }
 
@@ -89,24 +88,14 @@ class AliyunMqHandler @Autowired(required = false) constructor(
           this.subscribe(it.topic(), TextHelper.join("||", it.tags()), it.orderedListener())
           this.start()
           orderedConsumers.add(this)
-          logger.info(
-            "[Aliyun:MQ] - 注册顺序消息消费者(ORDERED CONSUMER)：Topic: {}, CID: {}, Tags: {}",
-            it.topic(),
-            it.consumerId(),
-            it.tags()
-          )
+          logger.info { "[Aliyun:MQ] - 注册顺序消息消费者(ORDERED CONSUMER)：Topic: ${it.topic()}, CID: ${it.consumerId()}, Tags: ${it.tags()}" }
         }
       } else {
         ONSFactory.createConsumer(config).apply {
           this.subscribe(it.topic(), TextHelper.join("||", it.tags()), it.normalListener())
           this.start()
           normalConsumers.add(this)
-          logger.info(
-            "[Aliyun:MQ] - 注册消息消费者(NORMAL CONSUMER)：Topic: {}, CID: {}, Tags: {}",
-            it.topic(),
-            it.consumerId(),
-            it.tags()
-          )
+          logger.info { "[Aliyun:MQ] - 注册消息消费者(NORMAL CONSUMER)：Topic: ${it.topic()}, CID: ${it.consumerId()}, Tags: ${it.tags()}" }
         }
       }
     }

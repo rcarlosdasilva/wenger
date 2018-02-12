@@ -2,8 +2,7 @@ package io.github.rcarlosdasilva.wenger.feature.sequence
 
 import io.github.rcarlosdasilva.wenger.common.exception.WengerRuntimeException
 import io.github.rcarlosdasilva.wenger.feature.config.app.misc.SequenceProperties
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.SmartInitializingSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -46,7 +45,7 @@ class SequenceHandler @Autowired constructor(
   private val sequenceProperties: SequenceProperties
 ) : SmartInitializingSingleton {
 
-  private val logger: Logger = LoggerFactory.getLogger(javaClass)
+  private val logger = KotlinLogging.logger {}
 
   private lateinit var host: Host
   /**
@@ -68,7 +67,7 @@ class SequenceHandler @Autowired constructor(
       }
 
       host = Host(this.workerId, this.dataCenterId)
-      logger.info("[ID] - ID序列化参数：WorkerId: {}, DataCenterId: {}", this.workerId, this.dataCenterId)
+      logger.info { "[ID] - ID序列化参数：WorkerId: ${this.workerId}, DataCenterId: ${this.dataCenterId}" }
     }
   }
 
