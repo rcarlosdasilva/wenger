@@ -104,6 +104,11 @@
       <optional>true</optional>
     </dependency>
     <dependency>
+      <groupId>com.aliyun.mns</groupId>
+      <artifactId>aliyun-sdk-mns</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.aliyun</groupId>
       <artifactId>aliyun-java-sdk-green</artifactId>
       <optional>true</optional>

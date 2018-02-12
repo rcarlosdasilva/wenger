@@ -1,6 +1,7 @@
 package io.github.rcarlosdasilva.wenger.feature.config.app
 
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.GreenProperties
+import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MnsProperties
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.MqProperties
 import io.github.rcarlosdasilva.wenger.feature.config.app.aliyun.OssProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -25,6 +26,10 @@ class AliyunProperties {
    * 消息队列配置
    */
   var mq = MqProperties()
+  /**
+   * 消息服务配置
+   */
+  var mns = MnsProperties()
   /**
    * 文件存储配置
    */

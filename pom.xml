@@ -60,6 +60,7 @@
     <aliyun.core.version>3.0.7</aliyun.core.version>
     <aliyun.oss.version>2.8.1</aliyun.oss.version>
     <aliyun.ons.version>1.7.0.Final</aliyun.ons.version>
+    <aliyun.mns.version>1.1.8.4</aliyun.mns.version>
     <aliyun.green.version>3.0.0</aliyun.green.version>
     <aliyun.log.version>0.6.10</aliyun.log.version>
     <aliyun.loghub.producer.version>0.1.8</aliyun.loghub.producer.version>
@@ -125,6 +126,11 @@
         <groupId>com.aliyun.openservices</groupId>
         <artifactId>ons-client</artifactId>
         <version>${aliyun.ons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.aliyun.mns</groupId>
+        <artifactId>aliyun-sdk-mns</artifactId>
+        <version>${aliyun.mns.version}</version>
       </dependency>
       <dependency>
         <groupId>com.aliyun</groupId>
