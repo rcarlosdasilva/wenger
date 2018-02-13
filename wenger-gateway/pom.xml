@@ -17,7 +17,7 @@
     <!-- Project Modules -->
     <dependency>
       <groupId>io.github.rcarlosdasilva</groupId>
-      <artifactId>wenger.feature</artifactId>
+      <artifactId>wenger.common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

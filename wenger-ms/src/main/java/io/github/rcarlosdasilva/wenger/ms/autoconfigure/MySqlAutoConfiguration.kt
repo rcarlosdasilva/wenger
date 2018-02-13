@@ -27,7 +27,10 @@ import org.apache.ibatis.session.SqlSessionFactory
 import org.mybatis.spring.SqlSessionTemplate
 import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
+import org.springframework.boot.autoconfigure.AutoConfigureBefore
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
+import org.springframework.boot.autoconfigure.flyway.FlywayDataSource
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -37,6 +40,7 @@ import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.support.ResourcePatternResolver
 import org.springframework.jdbc.datasource.DriverManagerDataSource
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.io.IOException
 import java.net.URI
@@ -51,7 +55,8 @@ import javax.sql.DataSource
  * @author [Dean Zhao](mailto:rcarlosdasilva@qq.com)
  */
 @Configuration
-@ConditionalOnBean(value = [DataSourceProperties::class])
+@ConditionalOnClass(value = [DataSource::class, EmbeddedDatabaseType::class])
+@AutoConfigureBefore(value = [DataSourceAutoConfiguration::class])
 @MapperScan(basePackages = ["io.github.rcarlosdasilva.wenger.feature.**.mapper"], markerInterface = BasicMapper::class)
 @EnableTransactionManagement
 @EnableConfigurationProperties(value = [DataSourceProperties::class, MySqlProperties::class])
@@ -65,6 +70,7 @@ open class MySqlAutoConfiguration @Autowired constructor(
 
   private val logger = KotlinLogging.logger {}
 
+  @FlywayDataSource
   @Bean
   open fun dataSource(): DataSource =
     with(mySqlProperties) {
@@ -118,8 +124,8 @@ open class MySqlAutoConfiguration @Autowired constructor(
             resourceResolver.getResources(s).toList()
           }.toTypedArray())
         } ?: run {
-          logger.info { "[MySQL] - 自动扫描路径\"resources/storage/mapper\"下的所有Mapper XML文件" }
-          this@fb.setMapperLocations(PathMatchingResourcePatternResolver().getResources("classpath:/storage/mapper/*Mapper.xml"))
+          logger.info { "[MySQL] - 自动扫描路径\"resources/storage/mapper/xml\"下的所有Mapper XML文件" }
+          this@fb.setMapperLocations(PathMatchingResourcePatternResolver().getResources("classpath:/storage/mapper/xml/*Mapper.xml"))
         }
         this.configurationProperties?.let { this@fb.setConfigurationProperties(it) }
         this@fb.setPlugins(arrayOf<Interceptor>(PaginationInterceptor()))

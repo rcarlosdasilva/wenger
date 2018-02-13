@@ -3,15 +3,16 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>wenger</artifactId>
+    <artifactId>wenger.ms</artifactId>
     <groupId>io.github.rcarlosdasilva</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>wenger.ms.sample.function</artifactId>
+  <artifactId>wenger.ms.upms</artifactId>
   <packaging>jar</packaging>
-  <description>Sample@Function - 例子-业务功能模块</description>
+  <version>${parent.version}</version>
+  <description>MS@UPMS - 用户权限管理微服务</description>
 
   <dependencies>
     <!-- Project Modules -->

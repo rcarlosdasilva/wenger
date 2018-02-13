@@ -5,8 +5,8 @@ import io.github.rcarlosdasilva.kits.sys.SystemHelper
 import io.github.rcarlosdasilva.wenger.common.constant.GeneralConstant
 import io.github.rcarlosdasilva.wenger.feature.config.AppProperties
 import mu.KotlinLogging
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.boot.context.ContextIdApplicationContextInitializer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ConfigurableApplicationContext
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component
 class EnvironmentHandler @Autowired constructor(
   private val env: Environment,
   private val appProperties: AppProperties
-) : ContextIdApplicationContextInitializer(), BeanPostProcessor {
+) : ContextIdApplicationContextInitializer(), InitializingBean {
 
   private val logger = KotlinLogging.logger {}
 
@@ -36,7 +36,7 @@ class EnvironmentHandler @Autowired constructor(
     super.initialize(applicationContext)
   }
 
-  override fun postProcessBeforeInitialization(bean: Any, beanName: String?): Any? {
+  override fun afterPropertiesSet() {
     val profiles = env.activeProfiles
     if (profiles.size > 1) {
       logger.warn { "[Environment] - 激活了多个Profile，执行环境将会是第一个激活的预置环境，建议使用单个Profile" }
@@ -55,7 +55,6 @@ class EnvironmentHandler @Autowired constructor(
     logger.info { "[Environment] - 使用临时目录：$tempDir" }
 
     EnvironmentHandlerHolder.Companion.self = this
-    return bean
   }
 
   class EnvironmentHandlerHolder private constructor() {

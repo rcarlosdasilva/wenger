@@ -21,8 +21,8 @@
     <module>wenger-feature</module>
     <module>wenger-common</module>
     <module>wenger-ms</module>
+    <module>wenger-ms-upms</module>
     <module>wenger-ms-sample-admin</module>
-    <module>wenger-ms-sample-function</module>
     <module>wenger-cli</module>
   </modules>
 
