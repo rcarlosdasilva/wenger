@@ -80,7 +80,7 @@ class IpHandler @Autowired constructor(
   }
 
   private fun dump(resource: Resource): String {
-    val tempFilePath = SystemHelper.tempDir() + TextHelper.random(5, Characters.NUMBERS_AND_LETTERS) + ".db"
+    val tempFilePath = SystemHelper.tempDir() + TextHelper.random(5, Characters.NUMBERS_AND_LETTERS) + ".db-migration"
     val tempFile = File(tempFilePath)
     // 转文件
     try {
