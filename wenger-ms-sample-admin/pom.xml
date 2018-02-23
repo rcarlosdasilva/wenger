@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>wenger.ms.sample.admin</artifactId>
+  <artifactId>wenger-ms-sample-admin</artifactId>
   <packaging>jar</packaging>
   <description>Sample@Admin - 例子-超管后台</description>
 
@@ -17,7 +17,7 @@
     <!-- Project Modules -->
     <dependency>
       <groupId>io.github.rcarlosdasilva</groupId>
-      <artifactId>wenger.ms</artifactId>
+      <artifactId>wenger-ms</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>wenger.gateway</artifactId>
+  <artifactId>wenger-gateway</artifactId>
   <packaging>jar</packaging>
   <description>Gateway - API网关</description>
 
@@ -17,7 +17,7 @@
     <!-- Project Modules -->
     <dependency>
       <groupId>io.github.rcarlosdasilva</groupId>
-      <artifactId>wenger.common</artifactId>
+      <artifactId>wenger-common</artifactId>
       <version>${project.version}</version>
     </dependency>
 

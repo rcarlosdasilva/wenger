@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>wenger.ms.upms</artifactId>
+  <artifactId>wenger-ms-upms</artifactId>
   <packaging>jar</packaging>
   <description>MS@UPMS - 用户权限管理微服务</description>
 
@@ -17,7 +17,7 @@
     <!-- Project Modules -->
     <dependency>
       <groupId>io.github.rcarlosdasilva</groupId>
-      <artifactId>wenger.ms</artifactId>
+      <artifactId>wenger-ms</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

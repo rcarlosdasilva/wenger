@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>wenger.ms</artifactId>
+  <artifactId>wenger-ms</artifactId>
   <packaging>jar</packaging>
   <description>MS - 微服务模块基础模板</description>
 
@@ -17,7 +17,7 @@
     <!-- Project Modules -->
     <dependency>
       <groupId>io.github.rcarlosdasilva</groupId>
-      <artifactId>wenger.feature</artifactId>
+      <artifactId>wenger-feature</artifactId>
       <version>${project.version}</version>
     </dependency>
 
