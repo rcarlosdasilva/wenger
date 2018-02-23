@@ -1,0 +1,12 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.rcarlosdasilva</groupId>
+        <artifactId>wenger-maven-plugin</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <configuration/>
+      </plugin>
+    </plugins>
+  </build>
+</project>
