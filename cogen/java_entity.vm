@@ -1,0 +1,63 @@
+package $cls.pck;
+
+#foreach($im in $cls.imports)
+import $im;
+#end
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.yingxinhuitong.formicary.service.arc.entity.BusinessEntity;
+
+/**
+  #if($cls.table.comment)
+ * $cls.table.comment
+ *
+  #end
+  #if($authorName)
+    #if($authorEmail)
+ * @author <a href="$authorEmail">$authorName</a>
+    #else
+ * @author $authorName
+    #end
+  #end
+  #if($time)
+ * @since $time
+  #end
+  #if($version)
+ * @version $version
+  #end
+ */
+@TableName("$cls.table.name")
+public class $cls.name extends ${cls.superClass}<$cls.name> {
+
+  private static final long serialVersionUID = 1L;
+
+  ## ----------  BEGIN 字段循环遍历  ----------
+  #foreach($field in $cls.table.fields)
+    #if($field.comment)
+  /**
+   * ${field.comment}
+   */
+    #end
+    #if($field.name != $field.javaName)
+  @TableField("$field.name")
+    #end
+  private $field.javaType.simpleName $field.javaName;
+  #end
+  ## ----------  END 字段循环遍历  ----------
+
+  #foreach($field in $cls.table.fields)
+    #if($field.javaType.simpleName == "boolean" || $field.javaType.simpleName == "Boolean")
+      #set($getprefix = "is")
+    #else
+      #set($getprefix = "get")
+    #end
+  public $field.javaType.simpleName $getprefix$TextHelper.upperFirst($field.javaName)() {
+    return $field.javaName;
+  }
+
+  public void set$TextHelper.upperFirst($field.javaName)($field.javaType.simpleName $field.javaName) {
+    this.$field.javaName = $field.javaName;
+  }
+
+  #end
+}

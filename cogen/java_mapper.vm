@@ -1,0 +1,27 @@
+package $cls.pck;
+
+import $entity.pck.$entity.name;
+import com.yingxinhuitong.formicary.service.arc.mapper.DefaultMapper;
+
+/**
+  #if($cls.table.comment)
+ * $cls.table.comment
+ *
+  #end
+  #if($authorName)
+    #if($authorEmail)
+ * @author <a href="$authorEmail">$authorName</a>
+    #else
+ * @author $authorName
+    #end
+  #end
+  #if($time)
+ * @since $time
+  #end
+  #if($version)
+ * @version $version
+  #end
+ */
+public interface $cls.name extends DefaultMapper<$entity.name> {
+
+}

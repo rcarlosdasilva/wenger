@@ -25,24 +25,16 @@ abstract class BasicEntity<E : Model<*>> : Model<E>() {
   @JsonSerialize(using = ToStringSerializer::class)
   var id: Long? = null
 
-  override fun hashCode(): Int {
-    return Objects.hashCode(id, javaClass.name)
-  }
+  override fun hashCode(): Int = Objects.hashCode(id, javaClass.name)
 
-  override fun equals(obj: Any?): Boolean {
-    return obj != null && Objects.equal(hashCode(), obj.hashCode())
-  }
+  override fun equals(other: Any?): Boolean = other != null && Objects.equal(hashCode(), other.hashCode())
 
-  override fun toString(): String {
-    return MoreObjects.toStringHelper(this).add("id", id).toString()
-  }
+  override fun toString(): String = MoreObjects.toStringHelper(this).add("id", id).toString()
 
-  override fun pkVal(): Serializable? {
-    return id
-  }
+  override fun pkVal(): Serializable? = id
 
   companion object {
-    var serialVersionUID = 3831204482160837640L
+    const val serialVersionUID = 3831204482160837640L
   }
 
 }
@@ -55,10 +47,10 @@ abstract class BasicEntity<E : Model<*>> : Model<E>() {
 abstract class SystemEntity<E : Model<*>> : BasicEntity<E>() {
 
   @TableField("flag_disabled")
-  var disabled = false
+  var isDisabled = false
 
   companion object {
-    var serialVersionUID = -5547146227019405990L
+    const val serialVersionUID = -5547146227019405990L
   }
 
 }
@@ -72,18 +64,18 @@ abstract class BusinessEntity<E : Model<*>> : SystemEntity<E>() {
 
   @TableLogic
   @TableField(value = "flag_deleted", strategy = FieldStrategy.IGNORED)
-  var deleted = false
+  var isDeleted = false
   @TableField(value = "time_create", fill = FieldFill.INSERT)
   var createAt: Date? = null
-  @TableField(value = "time_update", fill = FieldFill.INSERT)
+  @TableField(value = "time_update", fill = FieldFill.INSERT_UPDATE)
   var updateAt: Date? = null
-  @TableField(value = "who_create", fill = FieldFill.INSERT_UPDATE)
+  @TableField(value = "who_create", fill = FieldFill.INSERT)
   var createBy: Long? = null
   @TableField(value = "who_update", fill = FieldFill.INSERT_UPDATE)
   var updateBy: Long? = null
 
   companion object {
-    var serialVersionUID = 5776344955989370955L
+    const val serialVersionUID = 5776344955989370955L
   }
 
 }

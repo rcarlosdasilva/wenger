@@ -1,0 +1,22 @@
+package $cls.pck
+
+import io.github.rcarlosdasilva.wenger.ms.arc.BasicMapper
+import $entity.pck.$entity.name
+
+/**
+  #if($cls.table.comment)
+ * $cls.table.comment
+  #end
+ *
+  #if($authorName)
+    #if($authorEmail)
+ * @author [$authorName](mailto:$authorEmail)
+    #else
+ * @author $authorName
+    #end
+  #end
+  #if($time)
+ * @since $time
+  #end
+*/
+interface $cls.name : BasicMapper<$entity.name>

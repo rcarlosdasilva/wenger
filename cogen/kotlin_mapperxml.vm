@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${path_mapper}.${entity.name}Mapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="$entity.pck.$entity.name">
+    <result column="id" property="id"/>
+    <result column="flag_disabled" property="disabled"/>
+    <result column="flag_deleted" property="deleted"/>
+    <result column="time_create" property="createAt"/>
+    <result column="time_update" property="updateAt"/>
+    <result column="who_create" property="createBy"/>
+    <result column="who_update" property="updateBy"/>
+#foreach($field in $entity.table.fields)
+    <result column="$field.name" property="$field.javaName" />
+#end
+  </resultMap>
+
+</mapper>

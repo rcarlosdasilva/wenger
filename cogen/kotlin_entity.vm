@@ -1,0 +1,46 @@
+package $cls.pck
+
+#foreach($im in ${cls.imports})
+import $im
+#end
+import com.baomidou.mybatisplus.annotations.TableField
+import com.baomidou.mybatisplus.annotations.TableName
+
+/**
+  #if($cls.table.comment)
+ * $cls.table.comment
+  #end
+ *
+  #if($authorName)
+    #if($authorEmail)
+ * @author [$authorName](mailto:$authorEmail)
+    #else
+ * @author $authorName
+    #end
+  #end
+  #if($time)
+ * @since $time
+  #end
+ */
+@TableName("${cls.table.name}")
+class $cls.name : ${cls.superClass}<${cls.name}>() {
+
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in $cls.table.fields)
+  #if($field.comment)
+  /**
+   * $field.comment
+   */
+  #end
+  #if($field.name != $field.javaName)
+  @TableField("$field.name")
+  #end
+  var $field.javaName: $field.javaType.simpleName? = null
+#end
+## ----------  END 字段循环遍历  ----------
+
+  companion object {
+    const val serialVersionUID = 1L
+  }
+
+}
