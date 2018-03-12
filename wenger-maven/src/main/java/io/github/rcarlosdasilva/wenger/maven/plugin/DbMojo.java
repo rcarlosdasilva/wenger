@@ -15,7 +15,7 @@ import java.util.Set;
  *
  * @author <a href="mailto:rcarlosdasilva@qq.com">Dean Zhao</a>
  */
-@Mojo(name = "db")
+@Mojo(name = "db", threadSafe = true)
 public class DbMojo extends BasicMojo {
 
   private static final Set<String> actions = Sets.newHashSet("migration", "clean", "repair");
@@ -29,13 +29,13 @@ public class DbMojo extends BasicMojo {
    * <li>repair: 执行Flyway修复，用于在迁移过程中产生的冲突或执行失败时，恢复到最后一个成功版本，详情参考Flyway官网</li>
    * </ul>
    */
-  @Parameter(property = "action", required = true)
+  @Parameter(required = true)
   private String action;
 
   /**
    * <p>具体配置文件路径（默认：通过模块根目录下/src/main/resources/application.yml文件自动获取），一般不用设置</p>
    */
-  @Parameter(property = "configPath")
+  @Parameter
   private String configPath;
 
   @Override

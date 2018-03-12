@@ -2,10 +2,9 @@ package io.github.rcarlosdasilva.wenger.maven.plugin.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class PropertiesUtil {
 
@@ -18,6 +17,41 @@ public class PropertiesUtil {
 
     keys = new Stack<>();
     return flat(map);
+  }
+
+  public static Map<String, String> getByKeyStartsWith(Properties prop, String start) {
+    Map<String, String> result = Maps.newHashMap();
+    for (Map.Entry<Object, Object> entry : prop.entrySet()) {
+      String key = entry.getKey().toString();
+      if (key.startsWith(start)) {
+        result.put(key, entry.getValue().toString());
+      }
+    }
+    return result;
+  }
+
+  public static List<String> getMultiKeysByStartsWith(Properties prop, String prefix) {
+    Map<String, String> results = getByKeyStartsWith(prop, prefix);
+    Set<String> keys = Sets.newHashSet();
+    for (Map.Entry<String, String> entry : results.entrySet()) {
+      String key = entry.getKey();
+      int ind = key.indexOf("].", prefix.length());
+      keys.add(entry.getKey().substring(0, ind + 1));
+    }
+    List<String> orderedKyes = Lists.newArrayList(keys);
+    Collections.sort(orderedKyes);
+    return orderedKyes;
+  }
+
+  public static Map<String, String> getByKeyStartsAndEndsWith(Properties prop, String start, String end) {
+    Map<String, String> result = Maps.newHashMap();
+    for (Map.Entry<Object, Object> entry : prop.entrySet()) {
+      String key = entry.getKey().toString();
+      if (key.startsWith(start) && key.endsWith(end) && (start.length() + end.length()) < key.length()) {
+        result.put(key, entry.getValue().toString());
+      }
+    }
+    return result;
   }
 
   @SuppressWarnings("unchecked")
@@ -90,39 +124,6 @@ public class PropertiesUtil {
       }
     }
     return count;
-  }
-
-  public static void main(String[] args) {
-    Map<String, Object> spring = Maps.newHashMap();
-    spring.put("str", "abc");
-    spring.put("int", 123);
-
-    Map<String, Object> profile = Maps.newHashMap();
-    profile.put("hahha", "aaa");
-    profile.put("ggagag", "bbb");
-    spring.put("profiles", profile);
-
-    List<String> active = Lists.newArrayList();
-    active.add("test");
-    active.add("devel");
-    active.add("prod");
-    profile.put("active", active);
-
-    List<Object> odd = Lists.newArrayList();
-    Map<String, Object> m1 = Maps.newHashMap();
-    Map<String, Object> m2 = Maps.newHashMap();
-    m1.put("a", 1);
-    m1.put("b", 2);
-    m1.put("c", 3);
-    m2.put("x", 10);
-    m2.put("y", 20);
-    m2.put("z", 30);
-    odd.add(m1);
-    odd.add(m2);
-    spring.put("odd", odd);
-
-    Map<String, String> prop = fromMap(spring);
-    System.out.println(prop);
   }
 
 }

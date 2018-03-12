@@ -1,5 +1,6 @@
 package io.github.rcarlosdasilva.wenger.maven.plugin.executor;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import io.github.rcarlosdasilva.wenger.maven.plugin.utils.PropertiesUtil;
 import io.github.rcarlosdasilva.wenger.maven.plugin.utils.Storage;
@@ -19,7 +20,7 @@ public class ConfigurationExecutor {
   @SuppressWarnings("unchecked")
   public static void fetch(String configPath) throws MojoExecutionException {
     String rootPath = Storage.getInstance().getProject().getBasedir().getAbsolutePath();
-    if (configPath == null) {
+    if (Strings.isNullOrEmpty(configPath)) {
       configPath = DEFAULT_APPLICATION_FILE_PATH + ".yml";
     }
     String defaultConfigPath = rootPath + configPath;
