@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.github.rcarlosdasilva.wenger.ms.upms.storage.mysql.mapper.ContactMapper">
+
+  <!-- 通用查询映射结果 -->
+  <resultMap id="BaseResultMap" type="io.github.rcarlosdasilva.wenger.ms.upms.storage.mysql.entity.Contact">
+    <result column="id" property="id"/>
+    <result column="flag_disabled" property="disabled"/>
+    <result column="flag_deleted" property="deleted"/>
+    <result column="time_create" property="createAt"/>
+    <result column="time_update" property="updateAt"/>
+    <result column="who_create" property="createBy"/>
+    <result column="who_update" property="updateBy"/>
+    <result column="name" property="name" />
+    <result column="name_en" property="nameEn" />
+    <result column="title" property="title" />
+    <result column="mobile" property="mobile" />
+    <result column="telephone" property="telephone" />
+    <result column="mail" property="mail" />
+    <result column="address" property="address" />
+  </resultMap>
+
+</mapper>
