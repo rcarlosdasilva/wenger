@@ -20,6 +20,25 @@
       <artifactId>wenger-ms</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- Third Parts Libraries -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Test Or Non-inherited Libraries -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

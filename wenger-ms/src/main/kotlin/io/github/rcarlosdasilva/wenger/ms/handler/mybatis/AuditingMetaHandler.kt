@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component
  */
 @ConditionalOnBean(value = [SequenceHandler::class, PrincipalHandler::class])
 @Component
-class AuditingHandler @Autowired constructor(
+class AuditingMetaHandler @Autowired constructor(
   private val sequenceHandler: SequenceHandler,
   private val principalHandler: PrincipalHandler
 ) : MetaObjectHandler() {

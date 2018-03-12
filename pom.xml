@@ -404,6 +404,7 @@
         <version>${project.version}</version>
         <configuration>
           <cogenConfigLocation>${basedir}/../cogen/config.properties</cogenConfigLocation>
+          <action/>
         </configuration>
       </plugin>
     </plugins>

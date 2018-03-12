@@ -4,3 +4,7 @@ spring:
     url: jdbc:mysql://localhost:3306/wenger-upms?characterEncoding=utf-8&useSSL=false
     username: root
     password: root
+app:
+  misc:
+    sequence:
+      enable: true

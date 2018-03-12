@@ -16,7 +16,7 @@ import io.github.rcarlosdasilva.wenger.feature.context.RuntimeProfile
 import io.github.rcarlosdasilva.wenger.ms.arc.BasicEntity
 import io.github.rcarlosdasilva.wenger.ms.arc.BasicMapper
 import io.github.rcarlosdasilva.wenger.ms.config.microservice.MySqlProperties
-import io.github.rcarlosdasilva.wenger.ms.handler.mybatis.AuditingHandler
+import io.github.rcarlosdasilva.wenger.ms.handler.mybatis.AuditingMetaHandler
 import mu.KotlinLogging
 import org.apache.commons.dbcp2.BasicDataSource
 import org.apache.ibatis.io.VFS
@@ -39,7 +39,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.support.ResourcePatternResolver
-import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import java.io.IOException
@@ -57,14 +56,14 @@ import javax.sql.DataSource
 @Configuration
 @ConditionalOnClass(value = [DataSource::class, EmbeddedDatabaseType::class])
 @AutoConfigureBefore(value = [DataSourceAutoConfiguration::class])
-@MapperScan(basePackages = ["io.github.rcarlosdasilva.wenger.feature.**.mapper"], markerInterface = BasicMapper::class)
+@MapperScan(basePackages = ["io.github.rcarlosdasilva.wenger.ms.**.mapper"], markerInterface = BasicMapper::class)
 @EnableTransactionManagement
 @EnableConfigurationProperties(value = [DataSourceProperties::class, MySqlProperties::class])
 open class MySqlAutoConfiguration @Autowired constructor(
   private val dataSourceProperties: DataSourceProperties,
   private val defaultResourceLoader: DefaultResourceLoader,
   private val environmentHandler: EnvironmentHandler,
-  private val auditingHandler: AuditingHandler?,
+  private val auditingMetaHandler: AuditingMetaHandler?,
   private val mySqlProperties: MySqlProperties
 ) {
 
@@ -96,17 +95,22 @@ open class MySqlAutoConfiguration @Autowired constructor(
 
       logger.info { "[MySQL] - DataSource装配使用${this.poolType}连接池" }
       when (this.poolType) {
-        MySqlPoolType.NONE -> builder.type(DriverManagerDataSource::class.java).build()
-        MySqlPoolType.DRUID -> builder.type(DruidDataSource::class.java).build().apply { configDruid(this) }
-        MySqlPoolType.C3P0 -> builder.type(ComboPooledDataSource::class.java).build().apply { configC3p0(this) }
-        MySqlPoolType.DBCP -> builder.type(BasicDataSource::class.java).build().apply { configDbcp(this) }
-        MySqlPoolType.HIKARI -> builder.type(HikariDataSource::class.java).build().apply { configHikari(this) }
+        MySqlPoolType.NONE ->
+          builder.type(class4("org.springframework.jdbc.datasource.DriverManagerDataSource")).build()
+        MySqlPoolType.DRUID ->
+          builder.type(class4("com.alibaba.druid.pool.DruidDataSource")).build().apply { configDruid(this) }
+        MySqlPoolType.C3P0 ->
+          builder.type(class4("com.mchange.v2.c3p0.ComboPooledDataSource")).build().apply { configC3p0(this) }
+        MySqlPoolType.DBCP ->
+          builder.type(class4("org.apache.commons.dbcp2.BasicDataSource")).build().apply { configDbcp(this) }
+        MySqlPoolType.HIKARI ->
+          builder.type(class4("com.zaxxer.hikari.HikariDataSource")).build().apply { configHikari(this) }
       }
     }
 
   @Bean
   open fun sqlSessionFactory(dataSource: DataSource): SqlSessionFactory =
-    MybatisSqlSessionFactoryBean().run fb@ {
+    MybatisSqlSessionFactoryBean().run fb@{
       this.setDataSource(dataSource)
       this.vfs = SpringBootVFS::class.java
 
@@ -145,8 +149,9 @@ open class MySqlAutoConfiguration @Autowired constructor(
           this.logicNotDeleteValue = "0"
           this.isRefresh = environmentHandler.runtimeProfile === RuntimeProfile.DEVEL
 
-          auditingHandler?.let { this.metaObjectHandler = auditingHandler }
-              ?: logger.warn { "[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充" }
+          auditingMetaHandler?.let {
+            this.metaObjectHandler = auditingMetaHandler
+          } ?: logger.warn { "[MySQL] - AuditingHandler未实例化，审计字段将无法自动填充，请检查app.misc.sequence.enable是否开启" }
         }
 
         this@fb.setConfiguration(mc)
@@ -161,8 +166,9 @@ open class MySqlAutoConfiguration @Autowired constructor(
     mySqlProperties.mybatis.executorType?.let { SqlSessionTemplate(sqlSessionFactory, it) }
         ?: run { SqlSessionTemplate(sqlSessionFactory) }
 
-  private fun configDruid(druidDataSource: DruidDataSource) {
+  private fun configDruid(dataSource: DataSource) {
     mySqlProperties.druid ?: return
+    val druidDataSource = dataSource as DruidDataSource
 
     with(mySqlProperties.druid!!) {
       druidDataSource.initialSize = this.initialSize
@@ -181,8 +187,9 @@ open class MySqlAutoConfiguration @Autowired constructor(
     }
   }
 
-  private fun configC3p0(comboPooledDataSource: ComboPooledDataSource) {
+  private fun configC3p0(dataSource: DataSource) {
     mySqlProperties.c3p0 ?: return
+    val comboPooledDataSource = dataSource as ComboPooledDataSource
 
     with(mySqlProperties.c3p0!!) {
       comboPooledDataSource.isTestConnectionOnCheckout = this.testConnectionOnCheckout
@@ -218,8 +225,9 @@ open class MySqlAutoConfiguration @Autowired constructor(
     }
   }
 
-  private fun configDbcp(basicDataSource: BasicDataSource) {
+  private fun configDbcp(dataSource: DataSource) {
     mySqlProperties.dbcp ?: return
+    val basicDataSource = dataSource as BasicDataSource
 
     with(mySqlProperties.dbcp!!) {
       basicDataSource.defaultAutoCommit = this.defaultAutoCommit
@@ -257,8 +265,9 @@ open class MySqlAutoConfiguration @Autowired constructor(
     }
   }
 
-  private fun configHikari(hikariDataSource: HikariDataSource) {
+  private fun configHikari(dataSource: DataSource) {
     mySqlProperties.hikari ?: return
+    val hikariDataSource = dataSource as HikariDataSource
 
     with(mySqlProperties.hikari!!) {
       hikariDataSource.isAutoCommit = autoCommit
@@ -282,6 +291,10 @@ open class MySqlAutoConfiguration @Autowired constructor(
       hikariDataSource.validationTimeout = validationTimeout
       hikariDataSource.leakDetectionThreshold = leakDetectionThreshold
     }
+  }
+
+  companion object {
+    internal fun class4(className: String): Class<out DataSource> = Class.forName(className) as Class<out DataSource>
   }
 
 }

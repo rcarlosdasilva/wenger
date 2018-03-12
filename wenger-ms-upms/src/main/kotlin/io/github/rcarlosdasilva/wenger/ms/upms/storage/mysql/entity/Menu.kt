@@ -1,8 +1,8 @@
 package io.github.rcarlosdasilva.wenger.ms.upms.storage.mysql.entity
 
-import io.github.rcarlosdasilva.wenger.ms.arc.SystemEntity
 import com.baomidou.mybatisplus.annotations.TableField
 import com.baomidou.mybatisplus.annotations.TableName
+import io.github.rcarlosdasilva.wenger.ms.arc.SystemEntity
 
 /**
  * 菜单表
@@ -24,7 +24,7 @@ class Menu : SystemEntity<Menu>() {
   /**
    * 排序，从0开始，0最往前
    */
-  var sort: Integer? = null
+  var sort: Int? = null
   var icon: String? = null
   var url: String? = null
   var description: String? = null

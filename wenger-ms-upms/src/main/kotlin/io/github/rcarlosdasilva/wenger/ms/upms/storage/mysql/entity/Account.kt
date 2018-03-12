@@ -71,7 +71,7 @@ class Account : BusinessEntity<Account>() {
    * 登录次数
    */
   @TableField("count_of_login")
-  var countOfLogin: Integer? = null
+  var countOfLogin: Int? = null
   /**
    * 是否在线
    */
