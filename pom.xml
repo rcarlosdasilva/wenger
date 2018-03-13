@@ -14,6 +14,7 @@
   <artifactId>wenger</artifactId>
   <packaging>pom</packaging>
   <version>0.1-SNAPSHOT</version>
+  <name>Wenger</name>
   <description>Wenger - 分布式Web框架模板</description>
 
   <modules>
@@ -24,6 +25,7 @@
     <module>wenger-ms-upms</module>
     <module>wenger-registry</module>
     <module>wenger-maven</module>
+    <module>wenger-config</module>
   </modules>
 
   <properties>
