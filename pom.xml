@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.0.M7</version>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-parent</artifactId>
+    <version>Finchley.M8</version>
   </parent>
 
   <groupId>io.github.rcarlosdasilva</groupId>
@@ -22,7 +22,7 @@
     <module>wenger-common</module>
     <module>wenger-ms</module>
     <module>wenger-ms-upms</module>
-    <module>wenger-ms-sample-admin</module>
+    <module>wenger-registry</module>
     <module>wenger-maven</module>
   </modules>
 
@@ -56,7 +56,6 @@
     <druid.version>1.1.3</druid.version>
     <mybatisplus.version>2.1.9</mybatisplus.version>
     <jjwt.version>0.7.0</jjwt.version>
-    <flyway.version>5.0.7</flyway.version>
     <kotlin-logging.version>1.4.9</kotlin-logging.version>
 
     <aliyun.core.version>3.0.7</aliyun.core.version>
@@ -213,11 +212,6 @@
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>
         <version>${jjwt.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-core</artifactId>
-        <version>${flyway.version}</version>
       </dependency>
       <dependency>
         <groupId>io.github.microutils</groupId>
